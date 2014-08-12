@@ -11,6 +11,8 @@ doc/info.txt
 .pydevproject
 eclipse/*
 .gradle/*
+*.iml
+*.ipr
 
 # Ignore mac-specific file(s)
 .DS_Store

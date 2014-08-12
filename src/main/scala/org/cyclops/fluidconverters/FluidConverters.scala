@@ -1,13 +1,16 @@
 package org.cyclops.fluidconverters
 
+import org.cyclops.fluidconverters.block.BlockFluidConverter
 import cpw.mods.fml.common.Mod
 import cpw.mods.fml.common.event.FMLInitializationEvent
 import cpw.mods.fml.common.event.FMLPostInitializationEvent
 import cpw.mods.fml.common.event.FMLPreInitializationEvent
+import cpw.mods.fml.common.registry.GameRegistry
+import org.cyclops.fluidconverters.tileentity.TileEntityFluidConverter
 import cpw.mods.fml.common.Mod.EventHandler
 
 /**
- * The main mod class of NotEnoughLoot.
+ * The main mod class of FluidConverters.
  * @author rubensworks
  *
  */
@@ -17,21 +20,27 @@ import cpw.mods.fml.common.Mod.EventHandler
     version = Reference.MOD_VERSION,
     modLanguage = Reference.SCALA
     )
-object NotEnoughLoot {
+object FluidConverters {
   
     @EventHandler
     def preInit(event: FMLPreInitializationEvent) {
-    	println("HI!");
+    	
     }
     
     @EventHandler
     def init(event: FMLInitializationEvent) {
-    
+    	registerFluidConverterBlock
     }
     
     @EventHandler
     def postInit(event: FMLPostInitializationEvent) {
     	
+    }
+    
+    private def registerFluidConverterBlock() {
+        GameRegistry.registerBlock(BlockFluidConverter, BlockFluidConverter.NAMEDID);
+        BlockFluidConverter.setCreativeTab(FluidConvertersTab);
+        GameRegistry.registerTileEntity(classOf[TileEntityFluidConverter], BlockFluidConverter.NAMEDID);
     }
 
 }
