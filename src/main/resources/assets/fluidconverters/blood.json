@@ -1,0 +1,13 @@
+{
+    fluidElements : [
+        {
+            fluidName: "lava",
+            cost: 1.0
+        },
+        {
+            fluidName: "water",
+            cost: 2.0
+        }
+
+    ]
+}

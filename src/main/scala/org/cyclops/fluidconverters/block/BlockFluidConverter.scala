@@ -12,7 +12,7 @@ object BlockFluidConverter extends BlockContainer(Material.circuits) {
     
     @Override
     def createNewTileEntity(world: World, meta: Int): TileEntity = {
-        return new TileEntityFluidConverter;
+        new TileEntityFluidConverter
     }
     
 }
