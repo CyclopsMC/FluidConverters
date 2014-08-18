@@ -1,18 +1,35 @@
 package org.cyclops.fluidconverters.config;
 
+import net.minecraftforge.fluids.Fluid;
+
 /**
- * A fluid group data holder.
+ * Holder class for fluid groups
  * @author rubensworks
  */
 public class FluidGroup {
 
+    private String groupId;
     private FluidElement[] fluidElements;
 
-    /**
-     * @return The fluid elements of this group.
-     */
+    public String getGroupId() {
+        return groupId;
+    }
+
     public FluidElement[] getFluidElements() {
         return fluidElements;
+    }
+
+    public FluidElement getFluidElement(Fluid fluid) {
+        return getFluidElement(fluid.getName());
+    }
+
+    public FluidElement getFluidElement(String fluidName) {
+        for(FluidElement fluidElement : getFluidElements()) {
+            if(fluidElement.getFluid().getName().equals(fluidName)) {
+                return fluidElement;
+            }
+        }
+        return null;
     }
 
 }

@@ -4,7 +4,7 @@ import net.minecraftforge.fluids.FluidRegistry
 import org.apache.logging.log4j.Level
 import org.cyclops.fluidconverters.LoggerHelper
 
-import scala.collection.mutable.Set
+import scala.collection.mutable.Map
 
 /**
  * Registry of all the fluid groups that are convertable.
@@ -12,31 +12,47 @@ import scala.collection.mutable.Set
  */
 object FluidGroupRegistry {
 
-    val groups = Set[FluidGroup]()
+    val groups = Map[String, FluidGroup]()
 
     /**
      * Register a new fluid group.
      * @param group The group to register.
+     * @return If the adding succeeded.
      */
     def registerGroup(group: FluidGroup) : Boolean = {
-        val canAdd = group.getFluidElements.foldLeft(true)(
-            (prev, element) => prev && FluidRegistry.isFluidRegistered(element.getFluidName) && !isFluidRegistered(element.getFluidName)
-        )
-        if(canAdd) {
-            groups += group
-        } else {
-            LoggerHelper.log(Level.WARN,
-                "Skipped registration of a group because a fluid is already registered somewhere else.")
+        for(element <- group.getFluidElements) {
+            if(!FluidRegistry.isFluidRegistered(element.getFluidName)) {
+                LoggerHelper.log(Level.WARN, "The fluid %s in group %s is not registered because it does not exist."
+                        .format(element.getFluidName, group.getGroupId))
+            } else if(isFluidRegistered(element.getFluidName)) {
+                LoggerHelper.log(Level.WARN,
+                    ("Skipped registration of group %s because a fluid is already " +
+                        "registered somewhere else.").format(group.getGroupId))
+                return false
+            }
         }
-        canAdd
+        System.out.println(groups.put(group.getGroupId, group))// != None
+        true
+    }
+
+    /**
+     * Get a fluid group by id.
+     * @param groupId The id of the fluid group.
+     * @return The group with the given id, can be null.
+     */
+    def getGroup(groupId : String) : FluidGroup = {
+        groups.get(groupId) match {
+            case Some(i) => i
+            case None => null
+        }
     }
 
     /**
      * Get all the registered groups.
      * @return The set of groups.
      */
-    def getGroups : Set[FluidGroup] = {
-        groups
+    def getGroups : Iterable[FluidGroup] = {
+        groups.values
     }
 
     /**
@@ -45,7 +61,7 @@ object FluidGroupRegistry {
      * @return If the fluid is already registered.
      */
     def isFluidRegistered(fluidName: String): Boolean = {
-        groups.foldLeft(false)(
+        groups.values.foldLeft(false)(
             (prev, group) => prev || group.getFluidElements.foldLeft(false)(
                 (prev2, fluidElement) => prev2 || fluidElement.getFluidName.equals(fluidName)
             ))

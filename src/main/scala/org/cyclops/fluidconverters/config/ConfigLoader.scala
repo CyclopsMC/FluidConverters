@@ -1,6 +1,6 @@
 package org.cyclops.fluidconverters.config
 
-import java.io.{FileReader, BufferedReader, InputStream, File}
+import java.io.{FileReader, BufferedReader, File}
 import java.util.regex.Pattern
 
 import com.google.gson.{JsonIOException, JsonSyntaxException, Gson}
@@ -8,9 +8,10 @@ import org.apache.commons.io.FileUtils
 import org.apache.logging.log4j.Level
 import org.cyclops.fluidconverters.{LoggerHelper, Reference}
 
-import scala.collection.mutable
+import scala.collection.mutable.ListBuffer
 
 /**
+ * Load the configs.
  * @author rubensworks
  */
 object ConfigLoader {
@@ -48,17 +49,16 @@ object ConfigLoader {
      * @param rootFolder The root folder.
      * @return The found configs.
      */
-    def findFluidGroups(rootFolder: File): Seq[FluidGroup] = {
+    def findFluidGroups(rootFolder: File): ListBuffer[FluidGroup] = {
         findFluidGroups(rootFolder, rootFolder)
     }
 
-    private def findFluidGroups(rootFolder: File, currentFolder : File): Seq[FluidGroup] = {
-        val configs = mutable.LinearSeq[FluidGroup]()
+    private def findFluidGroups(rootFolder: File, currentFolder : File): ListBuffer[FluidGroup] = {
+        val configs = ListBuffer[FluidGroup]()
         for(file <- currentFolder.listFiles) {
             if(file.isFile && CONFIG_PATTERN.matcher(file.getName).matches()) {
                 try {
-                    val config = loadFluidGroup(file)
-                    configs :+ config
+                    configs += loadFluidGroup(file)
                     LoggerHelper.log("Loaded config %s.".format(file.getName));
                 } catch {
                     case e : JsonSyntaxException => {
@@ -71,7 +71,7 @@ object ConfigLoader {
                     }
                 }
             } else if(file.isDirectory) {
-                configs :+ findFluidGroups(file)
+                configs ++= findFluidGroups(file)
             } else {
                 LoggerHelper.log("Skipped config %s.".format(file.getName))
             }
@@ -79,7 +79,7 @@ object ConfigLoader {
         configs
     }
 
-    def loadFluidGroup(file : File) {
+    def loadFluidGroup(file : File) : FluidGroup = {
         val gson = new Gson
         gson.fromJson(new BufferedReader(new FileReader(file)), classOf[FluidGroup])
     }

@@ -2,7 +2,7 @@ package org.cyclops.fluidconverters
 
 import java.io.File
 
-import org.cyclops.fluidconverters.block.BlockFluidConverter
+import org.cyclops.fluidconverters.block.{ItemBlockFluidConverter, BlockFluidConverter}
 import cpw.mods.fml.common.Mod
 import cpw.mods.fml.common.event.FMLInitializationEvent
 import cpw.mods.fml.common.event.FMLPostInitializationEvent
@@ -45,7 +45,7 @@ object FluidConverters {
     }
     
     private def registerFluidConverterBlock() {
-        GameRegistry.registerBlock(BlockFluidConverter, BlockFluidConverter.NAMEDID)
+        GameRegistry.registerBlock(BlockFluidConverter, classOf[ItemBlockFluidConverter], BlockFluidConverter.NAMEDID)
         BlockFluidConverter.setCreativeTab(FluidConvertersTab)
         GameRegistry.registerTileEntity(classOf[TileEntityFluidConverter], BlockFluidConverter.NAMEDID)
     }
