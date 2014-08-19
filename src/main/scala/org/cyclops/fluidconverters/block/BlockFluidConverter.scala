@@ -3,6 +3,7 @@ package org.cyclops.fluidconverters.block
 import cpw.mods.fml.relauncher.{SideOnly, Side}
 import net.minecraft.block.BlockContainer
 import net.minecraft.block.material.Material
+import net.minecraft.client.renderer.texture.IIconRegister
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.player.EntityPlayer
@@ -12,16 +13,32 @@ import net.minecraft.tileentity.TileEntity
 import net.minecraft.world.World
 import net.minecraftforge.common.util.ForgeDirection
 import net.minecraftforge.fluids.{FluidContainerRegistry}
+import org.cyclops.fluidconverters.Reference
 import org.cyclops.fluidconverters.config.FluidGroupRegistry
 import org.cyclops.fluidconverters.tileentity.TileEntityFluidConverter
 
 object BlockFluidConverter extends BlockContainer(Material.iron) {
+
+    setBlockName(getUniqueName())
     
     final val NAMEDID = "FluidConverter"
 
     final val NBTKEY_GROUP = "fluidGroupId"
     final val NBTKEY_SIDE = "fluidSide%s"
     final val NBTKEY_UNITS = "units"
+
+    private def getUniqueName() : String = {
+        "blocks.fluidConverter"
+    }
+
+    @SideOnly(Side.CLIENT)
+    override def registerBlockIcons(iconRegister : IIconRegister) {
+        blockIcon = iconRegister.registerIcon(getTextureName + "_open")
+    }
+
+    override def getTextureName() : String = {
+        "%s:%s".format(Reference.MOD_ID, "fluidConverter")
+    }
     
     @Override
     def createNewTileEntity(world: World, meta: Int): TileEntity = {
@@ -65,7 +82,7 @@ object BlockFluidConverter extends BlockContainer(Material.iron) {
         } else {
             tile.setFluid(ForgeDirection.getOrientation(side), null)
         }
-        super.onBlockActivated(world, x, y, z, player, side, xPos, yPos, zPos);
+        super.onBlockActivated(world, x, y, z, player, side, xPos, yPos, zPos)
     }
     
 }

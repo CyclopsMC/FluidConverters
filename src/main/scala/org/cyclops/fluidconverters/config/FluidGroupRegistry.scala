@@ -31,7 +31,6 @@ object FluidGroupRegistry {
                 return false
             }
         }
-        System.out.println(groups.put(group.getGroupId, group))// != None
         true
     }
 
