@@ -29,7 +29,7 @@ class TileEntityFluidConverter extends TileEntity with IFluidHandler {
     }
 
     override def getDescriptionPacket: Packet = {
-        new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 1, getNBTTagCompound())
+        new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 1, getNBTTagCompound)
     }
 
     override def onDataPacket(net: NetworkManager, packet: S35PacketUpdateTileEntity) {
@@ -48,13 +48,17 @@ class TileEntityFluidConverter extends TileEntity with IFluidHandler {
         tag.setInteger(BlockFluidConverter.NBTKEY_UNITS, units)
     }
 
-    override def readFromNBT(tag: NBTTagCompound) {
-        super.readFromNBT(tag)
+    def readConverterDataFromNBT(tag: NBTTagCompound) {
         fluidGroupId = tag.getString(BlockFluidConverter.NBTKEY_GROUP)
         for(i <- fluidSides.indices) {
             fluidSides(i) = tag.getString(BlockFluidConverter.NBTKEY_SIDE.format(i))
         }
         units = tag.getInteger(BlockFluidConverter.NBTKEY_UNITS)
+    }
+
+    override def readFromNBT(tag: NBTTagCompound) {
+        super.readFromNBT(tag)
+        readConverterDataFromNBT(tag)
     }
     
     /**
@@ -77,19 +81,36 @@ class TileEntityFluidConverter extends TileEntity with IFluidHandler {
         
     }
 
-    private def getFluidGroup : FluidGroup = {
+    /**
+     * Get the fluid group for this tile.
+     * @return The fluid group.
+     */
+    def getFluidGroup : FluidGroup = {
         FluidGroupRegistry.getGroup(fluidGroupId)
     }
 
     private def getFluidElement(side : ForgeDirection) : FluidElement =  {
         val fluidName = fluidSides(side.ordinal())
         if(fluidName == null) null
-        getFluidGroup().getFluidElement(fluidName)
+        getFluidGroup.getFluidElement(fluidName)
+    }
+
+    /**
+     * Set the fluid for a side.
+     * @param side The side to set a fluid for.
+     * @param fluid The fluid to set.
+     */
+    def setFluid(side : ForgeDirection, fluid : Fluid) {
+        val fluidName = getFluidGroup.getFluidElement(fluid).getFluidName
+        fluidSides(side.ordinal()) = fluidName match {
+            case null => ""
+            case _    => fluidName
+        }
     }
 
     override def fill(from: ForgeDirection, resource: FluidStack, doFill: Boolean): Int = {
-        if(getFluidGroup() == null) return 0
-        val fluidElement = getFluidGroup().getFluidElement(resource.getFluid)
+        if(getFluidGroup == null) return 0
+        val fluidElement = getFluidGroup.getFluidElement(resource.getFluid)
         if(fluidElement == null) return 0
 
         val addUnits = (resource.amount * fluidElement.getCost).toInt
@@ -130,7 +151,7 @@ class TileEntityFluidConverter extends TileEntity with IFluidHandler {
     }
 
     override def getTankInfo(from: ForgeDirection): Array[FluidTankInfo] = {
-        val fluidGroup = getFluidGroup()
+        val fluidGroup = getFluidGroup
         if(fluidGroup == null) {
             return new Array[FluidTankInfo](0)
         }

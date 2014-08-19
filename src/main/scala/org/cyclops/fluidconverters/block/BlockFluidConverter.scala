@@ -5,20 +5,23 @@ import net.minecraft.block.BlockContainer
 import net.minecraft.block.material.Material
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.entity.EntityLivingBase
+import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.{ItemStack, Item}
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.world.World
+import net.minecraftforge.common.util.ForgeDirection
+import net.minecraftforge.fluids.{FluidContainerRegistry}
 import org.cyclops.fluidconverters.config.FluidGroupRegistry
 import org.cyclops.fluidconverters.tileentity.TileEntityFluidConverter
 
-object BlockFluidConverter extends BlockContainer(Material.circuits) {
+object BlockFluidConverter extends BlockContainer(Material.iron) {
     
     final val NAMEDID = "FluidConverter"
 
     final val NBTKEY_GROUP = "fluidGroupId"
     final val NBTKEY_SIDE = "fluidSide%s"
-    final val NBTKEY_UNITS = "fluidSide%s"
+    final val NBTKEY_UNITS = "units"
     
     @Override
     def createNewTileEntity(world: World, meta: Int): TileEntity = {
@@ -40,14 +43,27 @@ object BlockFluidConverter extends BlockContainer(Material.circuits) {
     }
 
     override def onBlockPlacedBy(world: World, x: Int, y: Int, z: Int, entity: EntityLivingBase, stack: ItemStack) {
-        if(entity != null) {
+        if(world.getTileEntity(x, y, z) != null) {
             val tile = world.getTileEntity(x, y, z).asInstanceOf[TileEntityFluidConverter]
             if(stack.getTagCompound != null) {
-                tile.readFromNBT(stack.getTagCompound)
+                tile.readConverterDataFromNBT(stack.getTagCompound)
                 tile.sendUpdate
             }
         }
         super.onBlockPlacedBy(world, x, y, z, entity, stack)
+    }
+
+    override def onBlockActivated(world : World, x : Int, y : Int, z : Int, player : EntityPlayer, side : Int, xPos : Float, yPos : Float, zPos : Float): Boolean = {
+        val item = player.getHeldItem
+        if(!world.isRemote && item != null && FluidContainerRegistry.isFilledContainer(item)) {
+            val fluid = FluidContainerRegistry.getFluidForFilledItem(item).getFluid
+            val tile = world.getTileEntity(x, y, z).asInstanceOf[TileEntityFluidConverter]
+            if(tile.getFluidGroup.getFluidElement(fluid) != null) {
+                tile.setFluid(ForgeDirection.getOrientation(side), fluid)
+            }
+            return false
+        }
+        super.onBlockActivated(world, x, y, z, player, side, xPos, yPos, zPos);
     }
     
 }
