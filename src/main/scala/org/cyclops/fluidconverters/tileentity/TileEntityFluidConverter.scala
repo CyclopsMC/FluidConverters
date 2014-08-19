@@ -16,6 +16,7 @@ import org.cyclops.fluidconverters.config.{FluidGroup, FluidGroupRegistry, Fluid
 class TileEntityFluidConverter extends TileEntity with IFluidHandler {
 
     private final val CAPACITY = 1000
+    private final val MBRATE = 10
 
     private var fluidGroupId : String = null
     private val fluidSides : Array[String] = new Array[String](ForgeDirection.VALID_DIRECTIONS.size)
@@ -81,6 +82,27 @@ class TileEntityFluidConverter extends TileEntity with IFluidHandler {
         
     }
 
+    override def updateEntity() {
+        // Loop over every direction and try filling the valid directions that have a configured fluid element.
+        for(direction <- ForgeDirection.VALID_DIRECTIONS) {
+            val fluidElement = getFluidElement(direction)
+            if (fluidElement != null) {
+                val tile = getWorldObj.getTileEntity(xCoord + direction.offsetX, yCoord + direction.offsetY,
+                    zCoord + direction.offsetZ)
+                if (tile != null && tile.isInstanceOf[IFluidHandler]) {
+                    val handler = tile.asInstanceOf[IFluidHandler]
+                    val amount = Math.min(MBRATE, units / fluidElement.getValue).toInt
+                    val toFill = new FluidStack(fluidElement.getFluid, amount)
+                    if(handler.canFill(direction.getOpposite, fluidElement.getFluid)
+                        && handler.fill(direction.getOpposite, toFill, false) > 0) {
+                        val filled = handler.fill(direction.getOpposite, toFill, true)
+                        this.drain(direction, filled, true)
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * Get the fluid group for this tile.
      * @return The fluid group.
@@ -113,14 +135,14 @@ class TileEntityFluidConverter extends TileEntity with IFluidHandler {
         val fluidElement = getFluidGroup.getFluidElement(resource.getFluid)
         if(fluidElement == null) return 0
 
-        val addUnits = (resource.amount * fluidElement.getCost).toInt
+        val addUnits = (resource.amount * fluidElement.getValue).toInt
         var addedAmount = 0
         if(units + addUnits <= CAPACITY) {
             addedAmount = resource.amount
             if(doFill) units += addUnits.toInt
 
         } else {
-            addedAmount = ((CAPACITY - units) / fluidElement.getCost).toInt
+            addedAmount = ((CAPACITY - units) / fluidElement.getValue).toInt
             if(doFill) units = CAPACITY
         }
 
@@ -136,8 +158,8 @@ class TileEntityFluidConverter extends TileEntity with IFluidHandler {
         val fluidElement = getFluidElement(from)
         if(fluidElement == null) return null
 
-        val toDrain = Math.min(maxDrain, units * fluidElement.getCost)
-        if(doDrain) units -= (toDrain / fluidElement.getCost).toInt
+        val toDrain = Math.min(maxDrain, units / fluidElement.getValue)
+        if(doDrain) units -= (toDrain * fluidElement.getValue).toInt
         new FluidStack(fluidElement.getFluid, toDrain.toInt)
     }
 
@@ -158,7 +180,7 @@ class TileEntityFluidConverter extends TileEntity with IFluidHandler {
         val info = new Array[FluidTankInfo](fluidGroup.getFluidElements.length)
         for(i <- fluidGroup.getFluidElements.indices) {
             val element = fluidGroup.getFluidElements()(i)
-            info(i) = new FluidTankInfo(new FluidStack(element.getFluid, (units / element.getCost).toInt), CAPACITY)
+            info(i) = new FluidTankInfo(new FluidStack(element.getFluid, (units / element.getValue).toInt), CAPACITY)
         }
         info
     }

@@ -10,7 +10,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 public class FluidElement {
 
     private String fluidName;
-    private double cost;
+    private double value;
 
     /**
      * @return The name of the fluid.
@@ -20,10 +20,10 @@ public class FluidElement {
     }
 
     /**
-     * @return The cost of the fluid.
+     * @return The value of the fluid.
      */
-    public double getCost() {
-        return cost;
+    public double getValue() {
+        return value;
     }
 
     /**

@@ -23,7 +23,7 @@ class ItemBlockFluidConverter(block: Block) extends ItemBlock(block) {
                 val group = FluidGroupRegistry.getGroup(fluidGroupId)
                 validContent = true
                 for(element <- group.getFluidElements) {
-                    infoList.add("%s    %s : %f".format(EnumChatFormatting.AQUA, element.getFluidName, element.getCost))
+                    infoList.add("%s    %s : %f".format(EnumChatFormatting.AQUA, element.getFluidName, element.getValue))
                 }
             }
         }
