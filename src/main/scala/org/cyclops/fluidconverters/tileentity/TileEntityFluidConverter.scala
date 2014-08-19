@@ -123,10 +123,14 @@ class TileEntityFluidConverter extends TileEntity with IFluidHandler {
      * @param fluid The fluid to set.
      */
     def setFluid(side : ForgeDirection, fluid : Fluid) {
-        val fluidName = getFluidGroup.getFluidElement(fluid).getFluidName
-        fluidSides(side.ordinal()) = fluidName match {
-            case null => ""
-            case _    => fluidName
+        if(fluid == null) {
+            fluidSides(side.ordinal()) = ""
+        } else {
+            val fluidName = getFluidGroup.getFluidElement(fluid).getFluidName
+            fluidSides(side.ordinal()) = fluidName match {
+                case null => ""
+                case _ => fluidName
+            }
         }
     }
 

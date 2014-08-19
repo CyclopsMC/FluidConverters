@@ -54,14 +54,16 @@ object BlockFluidConverter extends BlockContainer(Material.iron) {
     }
 
     override def onBlockActivated(world : World, x : Int, y : Int, z : Int, player : EntityPlayer, side : Int, xPos : Float, yPos : Float, zPos : Float): Boolean = {
-        val item = player.getHeldItem
-        if(!world.isRemote && item != null && FluidContainerRegistry.isFilledContainer(item)) {
+        val item = player.inventory.getCurrentItem
+        val tile = world.getTileEntity(x, y, z).asInstanceOf[TileEntityFluidConverter]
+        if(item != null && FluidContainerRegistry.isFilledContainer(item)) {
             val fluid = FluidContainerRegistry.getFluidForFilledItem(item).getFluid
-            val tile = world.getTileEntity(x, y, z).asInstanceOf[TileEntityFluidConverter]
             if(tile.getFluidGroup.getFluidElement(fluid) != null) {
                 tile.setFluid(ForgeDirection.getOrientation(side), fluid)
             }
-            return false
+            return true
+        } else {
+            tile.setFluid(ForgeDirection.getOrientation(side), null)
         }
         super.onBlockActivated(world, x, y, z, player, side, xPos, yPos, zPos);
     }
