@@ -111,10 +111,17 @@ class TileEntityFluidConverter extends TileEntity with IFluidHandler {
         FluidGroupRegistry.getGroup(fluidGroupId)
     }
 
-    private def getFluidElement(side : ForgeDirection) : FluidElement =  {
+    /**
+     * Get the fluid element of a side.
+     * @param side The side.
+     * @return The fluid element, can be null.
+     */
+    def getFluidElement(side : ForgeDirection) : FluidElement =  {
+        val fluidGroup = getFluidGroup
+        if(fluidGroup == null) return null
         val fluidName = fluidSides(side.ordinal())
-        if(fluidName == null) null
-        getFluidGroup.getFluidElement(fluidName)
+        if(fluidName == null) return null
+        fluidGroup.getFluidElement(fluidName)
     }
 
     /**

@@ -19,8 +19,8 @@ class ItemBlockFluidConverter(block: Block) extends ItemBlock(block) {
         var validContent = false
         if(itemStack.getTagCompound != null) {
             val fluidGroupId = itemStack.getTagCompound.getString(BlockFluidConverter.NBTKEY_GROUP)
-            if(fluidGroupId != null) {
-                val group = FluidGroupRegistry.getGroup(fluidGroupId)
+            val group = FluidGroupRegistry.getGroup(fluidGroupId)
+            if(group != null) {
                 validContent = true
                 for(element <- group.getFluidElements) {
                     infoList.add("%s    %s : %f".format(EnumChatFormatting.AQUA, element.getFluidName, element.getValue))

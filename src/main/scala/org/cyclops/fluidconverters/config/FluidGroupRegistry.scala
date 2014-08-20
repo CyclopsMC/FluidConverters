@@ -31,7 +31,7 @@ object FluidGroupRegistry {
                 return false
             }
         }
-        true
+        groups.put(group.getGroupId, group) != None
     }
 
     /**

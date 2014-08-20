@@ -3,7 +3,7 @@ package org.cyclops.fluidconverters
 import java.io.File
 
 import org.cyclops.fluidconverters.block.{ItemBlockFluidConverter, BlockFluidConverter}
-import cpw.mods.fml.common.Mod
+import cpw.mods.fml.common.{SidedProxy, Mod}
 import cpw.mods.fml.common.event.FMLInitializationEvent
 import cpw.mods.fml.common.event.FMLPostInitializationEvent
 import cpw.mods.fml.common.event.FMLPreInitializationEvent
@@ -25,6 +25,8 @@ import cpw.mods.fml.common.Mod.EventHandler
     )
 object FluidConverters {
 
+    @SidedProxy(clientSide = "org.cyclops.fluidconverters.ClientProxy", serverSide = "org.cyclops.fluidconverters.CommonProxy")
+    var proxy : CommonProxy = null
     var rootFolder : File = null
 
     @EventHandler
@@ -36,6 +38,7 @@ object FluidConverters {
     @EventHandler
     def init(event: FMLInitializationEvent) {
         registerFluidConverterBlock()
+        proxy.registerRenderers()
     }
     
     @EventHandler
