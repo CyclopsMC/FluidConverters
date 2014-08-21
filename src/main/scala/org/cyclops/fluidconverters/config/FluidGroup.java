@@ -9,10 +9,18 @@ import net.minecraftforge.fluids.Fluid;
 public class FluidGroup {
 
     private String groupId;
+    private String groupName = null;
     private FluidElement[] fluidElements;
 
     public String getGroupId() {
         return groupId;
+    }
+
+    public String getGroupName() {
+        if(groupName == null) {
+            return groupId;
+        }
+        return groupName;
     }
 
     public FluidElement[] getFluidElements() {

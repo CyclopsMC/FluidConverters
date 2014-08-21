@@ -1,5 +1,6 @@
 {
     groupId : "aqualava",
+    groupName : "Aqua Lava",
     fluidElements : [
         {
             fluidName: "lava",
