@@ -19,7 +19,7 @@ import org.cyclops.fluidconverters.tileentity.TileEntityFluidConverter
 
 object BlockFluidConverter extends BlockContainer(Material.iron) {
 
-    setBlockName(getUniqueName())
+    setBlockName(getUniqueName)
     
     final val NAMEDID = "FluidConverter"
 
