@@ -42,9 +42,6 @@ object BlockFluidConverter extends BlockContainer(Material.iron) {
 
     override def renderAsNormalBlock : Boolean = false
 
-    //@SideOnly(Side.CLIENT)
-    //override def shouldSideBeRendered(world : IBlockAccess, x : Int, y : Int, z : Int, side : Int): Boolean = true
-
     @SideOnly(Side.CLIENT)
     override def getSubBlocks(item: Item, creativeTabs: CreativeTabs, list: java.util.List[_]) {
         val itemList = list.asInstanceOf[java.util.List[ItemStack]]

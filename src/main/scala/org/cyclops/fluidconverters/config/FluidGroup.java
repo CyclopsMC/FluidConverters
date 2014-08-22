@@ -11,6 +11,7 @@ public class FluidGroup {
     private String groupId;
     private String groupName = null;
     private FluidElement[] fluidElements;
+    private double lossRatio = 0.0;
 
     public String getGroupId() {
         return groupId;
@@ -38,6 +39,10 @@ public class FluidGroup {
             }
         }
         return null;
+    }
+
+    public double getLossRatio() {
+        return lossRatio;
     }
 
 }

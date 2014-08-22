@@ -170,7 +170,7 @@ class TileEntityFluidConverter extends TileEntity with IFluidHandler {
         if(fluidElement == null) return null
 
         val toDrain = Math.min(maxDrain, units / fluidElement.getValue)
-        if(doDrain) units -= (toDrain * fluidElement.getValue).toInt
+        if(doDrain) units -= (toDrain * fluidElement.getValue * (1 + getFluidGroup.getLossRatio)).toInt
         new FluidStack(fluidElement.getFluid, toDrain.toInt)
     }
 
