@@ -22,19 +22,21 @@ class ItemBlockFluidConverter(block: Block) extends ItemBlock(block) {
             val fluidGroupId = itemStack.getTagCompound.getString(BlockFluidConverter.NBTKEY_GROUP)
             val group = FluidGroupRegistry.getGroup(fluidGroupId)
             if(group != null) {
-                infoList.add("%sConverter: %s".format(EnumChatFormatting.GOLD, group.getGroupName))
+                infoList.add("%s%s: %s".format(EnumChatFormatting.GOLD,
+                    StatCollector.translateToLocal("tile.blocks.fluidConverter.converter"), group.getGroupName))
                 validContent = true
                 if(Keyboard.isKeyDown(Keyboard.KEY_RSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
                     for (element <- group.getFluidElements) {
                         infoList.add("%s%s: %.2f".format(EnumChatFormatting.GRAY, element.getFluid.getLocalizedName, element.getValue))
                     }
                 } else {
-                    infoList.add("%s%sShift for more info".format(EnumChatFormatting.GRAY, EnumChatFormatting.ITALIC))
+                    infoList.add("%s%s%s".format(EnumChatFormatting.GRAY, EnumChatFormatting.ITALIC,
+                        StatCollector.translateToLocal("info.moreInfo")))
                 }
             }
         }
         if(!validContent) {
-            infoList.add("%sInvalid converter".format(EnumChatFormatting.ITALIC))
+            infoList.add("%s%s".format(EnumChatFormatting.ITALIC, StatCollector.translateToLocal("info.invalid")))
         }
 
     }
