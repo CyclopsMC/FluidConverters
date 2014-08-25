@@ -12,5 +12,6 @@
         }
 
     ],
-    lossRatio : 1.0
+    lossRatio : 1.0,
+    hasRecipe : true
 }

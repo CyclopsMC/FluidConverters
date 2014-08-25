@@ -16,6 +16,7 @@ public class FluidGroup {
     private String groupName = null;
     private FluidElement[] fluidElements;
     private double lossRatio = 0.0;
+    private boolean hasRecipe = true;
 
     public String getGroupId() {
         return groupId;
@@ -47,6 +48,10 @@ public class FluidGroup {
 
     public double getLossRatio() {
         return lossRatio;
+    }
+
+    public boolean hasRecipe() {
+        return hasRecipe;
     }
 
     public void registerRecipe(ItemStack result, ItemStack container) {

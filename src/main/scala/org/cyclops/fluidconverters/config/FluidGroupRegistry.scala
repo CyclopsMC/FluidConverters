@@ -68,12 +68,14 @@ object FluidGroupRegistry {
 
     def registerRecipes() {
         for(group <- groups.values) {
-            val result = new ItemStack(BlockFluidConverter)
-            BlockFluidConverter.addGroupInfo(result, group)
-            for(element <- group.getFluidElements) {
-                val container : ItemStack = FluidContainerRegistry.fillFluidContainer(new FluidStack(element.getFluid, FluidContainerRegistry.BUCKET_VOLUME), new ItemStack(Items.bucket))
-                if(container != null) {
-                    group.registerRecipe(result, container)
+            if(group.hasRecipe) {
+                val result = new ItemStack(BlockFluidConverter)
+                BlockFluidConverter.addGroupInfo(result, group)
+                for (element <- group.getFluidElements) {
+                    val container: ItemStack = FluidContainerRegistry.fillFluidContainer(new FluidStack(element.getFluid, FluidContainerRegistry.BUCKET_VOLUME), new ItemStack(Items.bucket))
+                    if (container != null) {
+                        group.registerRecipe(result, container)
+                    }
                 }
             }
         }
