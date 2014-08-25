@@ -1,15 +1,12 @@
 package org.cyclops.fluidconverters.render
 
-import cpw.mods.fml.client.registry.ClientRegistry
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.Tessellator
-import net.minecraft.client.renderer.entity.{RenderItem, RenderManager}
 import net.minecraft.client.renderer.texture.TextureMap
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer
-import net.minecraft.entity.item.EntityItem
 import net.minecraft.init.Blocks
-import net.minecraft.item.ItemStack
 import net.minecraft.tileentity.TileEntity
+import net.minecraft.util.IIcon
 import net.minecraftforge.common.util.ForgeDirection
 import org.cyclops.fluidconverters.tileentity.TileEntityFluidConverter
 import org.lwjgl.opengl.GL11
@@ -20,6 +17,7 @@ import org.lwjgl.opengl.GL11
  */
 object RenderFluidConverter extends TileEntitySpecialRenderer {
 
+    var stubIcon : IIcon = null
     val coordinates = Array(
         Array( // DOWN
             Array(0.01D, 0.01D, 0.01D),
@@ -83,7 +81,7 @@ object RenderFluidConverter extends TileEntitySpecialRenderer {
         for(side <- ForgeDirection.VALID_DIRECTIONS) {
             val element = converter.getFluidElement(side)
 
-            var icon = Blocks.sponge.getBlockTextureFromSide(0)//TODO: TEMP
+            var icon = stubIcon
             if(element != null) {
                 icon = element.getFluid.getIcon
             }

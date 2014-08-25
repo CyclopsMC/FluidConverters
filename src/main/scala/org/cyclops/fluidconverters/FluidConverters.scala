@@ -2,6 +2,11 @@ package org.cyclops.fluidconverters
 
 import java.io.File
 
+import cpw.mods.fml.common.eventhandler.SubscribeEvent
+import cpw.mods.fml.relauncher.{SideOnly, Side}
+import net.minecraft.client.Minecraft
+import net.minecraftforge.client.event.TextureStitchEvent
+import net.minecraftforge.common.MinecraftForge
 import org.cyclops.fluidconverters.block.{ItemBlockFluidConverter, BlockFluidConverter}
 import cpw.mods.fml.common.{SidedProxy, Mod}
 import cpw.mods.fml.common.event.FMLInitializationEvent
@@ -9,6 +14,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent
 import cpw.mods.fml.common.event.FMLPreInitializationEvent
 import cpw.mods.fml.common.registry.GameRegistry
 import org.cyclops.fluidconverters.config.{FluidGroupRegistry, ConfigLoader}
+import org.cyclops.fluidconverters.render.RenderFluidConverter
 import org.cyclops.fluidconverters.tileentity.TileEntityFluidConverter
 import cpw.mods.fml.common.Mod.EventHandler
 
@@ -31,6 +37,7 @@ object FluidConverters {
 
     @EventHandler
     def preInit(event: FMLPreInitializationEvent) {
+        MinecraftForge.EVENT_BUS.register(this);
         val rootFolderName = "%s/%s".format(event.getModConfigurationDirectory, Reference.MOD_ID)
         rootFolder = ConfigLoader.init(rootFolderName)
     }
@@ -52,6 +59,12 @@ object FluidConverters {
         GameRegistry.registerBlock(BlockFluidConverter, classOf[ItemBlockFluidConverter], BlockFluidConverter.NAMEDID)
         BlockFluidConverter.setCreativeTab(FluidConvertersTab)
         GameRegistry.registerTileEntity(classOf[TileEntityFluidConverter], BlockFluidConverter.NAMEDID)
+    }
+
+    @SubscribeEvent
+    @SideOnly(Side.CLIENT)
+    def onTextureHookPre(event: TextureStitchEvent.Pre) {
+        RenderFluidConverter.stubIcon = Minecraft.getMinecraft().getTextureMapBlocks().registerIcon(Reference.MOD_ID + ":fluidConverter_center");
     }
 
 }
