@@ -14,7 +14,7 @@ import net.minecraft.world.{IBlockAccess, World}
 import net.minecraftforge.common.util.ForgeDirection
 import net.minecraftforge.fluids.FluidContainerRegistry
 import org.cyclops.fluidconverters.{FluidColorAnalyzer, Reference}
-import org.cyclops.fluidconverters.config.FluidGroupRegistry
+import org.cyclops.fluidconverters.config.{FluidGroup, FluidGroupRegistry}
 import org.cyclops.fluidconverters.tileentity.TileEntityFluidConverter
 
 object BlockFluidConverter extends BlockContainer(Material.iron) {
@@ -42,16 +42,20 @@ object BlockFluidConverter extends BlockContainer(Material.iron) {
 
     override def renderAsNormalBlock : Boolean = false
 
+    def addGroupInfo(itemStack: ItemStack, fluidGroup: FluidGroup) {
+        val groupId = fluidGroup.getGroupId
+        var tag = itemStack.getTagCompound
+        if(tag == null) tag = new NBTTagCompound
+        tag.setString(NBTKEY_GROUP, groupId)
+        itemStack.setTagCompound(tag)
+    }
+
     @SideOnly(Side.CLIENT)
     override def getSubBlocks(item: Item, creativeTabs: CreativeTabs, list: java.util.List[_]) {
         val itemList = list.asInstanceOf[java.util.List[ItemStack]]
         for(fluidGroup <- FluidGroupRegistry.getGroups) {
-            val groupId = fluidGroup.getGroupId
             val itemStack = new ItemStack(this)
-            var tag = itemStack.getTagCompound
-            if(tag == null) tag = new NBTTagCompound
-            tag.setString(NBTKEY_GROUP, groupId)
-            itemStack.setTagCompound(tag)
+            addGroupInfo(itemStack, fluidGroup)
             itemList.add(itemStack)
         }
     }

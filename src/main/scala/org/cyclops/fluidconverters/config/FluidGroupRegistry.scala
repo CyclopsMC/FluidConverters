@@ -1,8 +1,13 @@
 package org.cyclops.fluidconverters.config
 
-import net.minecraftforge.fluids.FluidRegistry
+import cpw.mods.fml.common.registry.GameRegistry
+import net.minecraft.init.Items
+import net.minecraft.item.ItemStack
+import net.minecraftforge.fluids.{FluidStack, FluidContainerRegistry, FluidRegistry}
+import net.minecraftforge.oredict.ShapedOreRecipe
 import org.apache.logging.log4j.Level
 import org.cyclops.fluidconverters.LoggerHelper
+import org.cyclops.fluidconverters.block.BlockFluidConverter
 
 import scala.collection.mutable.Map
 
@@ -59,6 +64,19 @@ object FluidGroupRegistry {
             (prev, group) => prev || group.getFluidElements.foldLeft(false)(
                 (prev2, fluidElement) => prev2 || fluidElement.getFluidName.equals(fluidName)
             ))
+    }
+
+    def registerRecipes() {
+        for(group <- groups.values) {
+            val result = new ItemStack(BlockFluidConverter)
+            BlockFluidConverter.addGroupInfo(result, group)
+            for(element <- group.getFluidElements) {
+                val container : ItemStack = FluidContainerRegistry.fillFluidContainer(new FluidStack(element.getFluid, FluidContainerRegistry.BUCKET_VOLUME), new ItemStack(Items.bucket))
+                if(container != null) {
+                    group.registerRecipe(result, container)
+                }
+            }
+        }
     }
 
 }

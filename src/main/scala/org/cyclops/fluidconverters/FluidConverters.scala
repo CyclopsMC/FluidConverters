@@ -3,6 +3,7 @@ package org.cyclops.fluidconverters
 import java.io.File
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent
+import cpw.mods.fml.common.gameevent.PlayerEvent.ItemCraftedEvent
 import cpw.mods.fml.relauncher.{SideOnly, Side}
 import net.minecraft.client.Minecraft
 import net.minecraftforge.client.event.TextureStitchEvent
@@ -37,7 +38,7 @@ object FluidConverters {
 
     @EventHandler
     def preInit(event: FMLPreInitializationEvent) {
-        MinecraftForge.EVENT_BUS.register(this);
+        MinecraftForge.EVENT_BUS.register(this)
         val rootFolderName = "%s/%s".format(event.getModConfigurationDirectory, Reference.MOD_ID)
         rootFolder = ConfigLoader.init(rootFolderName)
     }
@@ -53,6 +54,7 @@ object FluidConverters {
         LoggerHelper.log("Loading fluid converters configs...")
         ConfigLoader.findFluidGroups(rootFolder).foreach(fluidGroup => FluidGroupRegistry.registerGroup(fluidGroup))
         FluidColorAnalyzer.init()
+        FluidGroupRegistry.registerRecipes()
     }
     
     private def registerFluidConverterBlock() {
@@ -64,7 +66,7 @@ object FluidConverters {
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     def onTextureHookPre(event: TextureStitchEvent.Pre) {
-        RenderFluidConverter.stubIcon = Minecraft.getMinecraft().getTextureMapBlocks().registerIcon(Reference.MOD_ID + ":fluidConverter_center");
+        RenderFluidConverter.stubIcon = Minecraft.getMinecraft.getTextureMapBlocks.registerIcon(Reference.MOD_ID + ":fluidConverter_center")
     }
 
 }
