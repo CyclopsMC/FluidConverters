@@ -10,10 +10,10 @@ import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.{Item, ItemStack}
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.tileentity.TileEntity
-import net.minecraft.world.World
+import net.minecraft.world.{IBlockAccess, World}
 import net.minecraftforge.common.util.ForgeDirection
 import net.minecraftforge.fluids.FluidContainerRegistry
-import org.cyclops.fluidconverters.Reference
+import org.cyclops.fluidconverters.{FluidColorAnalyzer, Reference}
 import org.cyclops.fluidconverters.config.FluidGroupRegistry
 import org.cyclops.fluidconverters.tileentity.TileEntityFluidConverter
 
@@ -81,6 +81,15 @@ object BlockFluidConverter extends BlockContainer(Material.iron) {
         }
         world.markBlockForUpdate(x, y, z)
         super.onBlockActivated(world, x, y, z, player, side, xPos, yPos, zPos)
+    }
+
+    @SideOnly(Side.CLIENT)
+    override def getRenderBlockPass: Int = 1
+
+    @SideOnly(Side.CLIENT)
+    override def colorMultiplier(world : IBlockAccess, x : Int, y : Int, z : Int): Int = {
+        val tile = world.getTileEntity(x, y, z).asInstanceOf[TileEntityFluidConverter]
+        FluidColorAnalyzer.getAverageColor(tile.getFluidGroup)
     }
     
 }

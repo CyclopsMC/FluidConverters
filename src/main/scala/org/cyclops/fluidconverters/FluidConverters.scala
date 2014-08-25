@@ -45,6 +45,7 @@ object FluidConverters {
     def postInit(event: FMLPostInitializationEvent) {
         LoggerHelper.log("Loading fluid converters configs...")
         ConfigLoader.findFluidGroups(rootFolder).foreach(fluidGroup => FluidGroupRegistry.registerGroup(fluidGroup))
+        FluidColorAnalyzer.init()
     }
     
     private def registerFluidConverterBlock() {

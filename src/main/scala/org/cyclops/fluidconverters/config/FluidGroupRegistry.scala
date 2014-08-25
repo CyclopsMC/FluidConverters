@@ -24,11 +24,6 @@ object FluidGroupRegistry {
             if(!FluidRegistry.isFluidRegistered(element.getFluidName)) {
                 LoggerHelper.log(Level.WARN, "The fluid %s in group %s is not registered because it does not exist."
                         .format(element.getFluidName, group.getGroupId))
-            } else if(isFluidRegistered(element.getFluidName)) {
-                LoggerHelper.log(Level.WARN,
-                    ("Skipped registration of group %s because a fluid is already " +
-                        "registered somewhere else.").format(group.getGroupId))
-                return false
             }
         }
         groups.put(group.getGroupId, group) != None
