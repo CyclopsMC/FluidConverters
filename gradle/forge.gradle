@@ -2,7 +2,7 @@ minecraft {
     version = "${config.minecraft_version}-${config.forge_version}"
     runDir = "eclipse/assets"
     
-    replaceIn "Reference.java"
+    replaceIn "Reference.scala"
     replace "@VERSION@", project.version
     replace "@MC_VERSION@", project.config.minecraft_version
     replace "@FORGE_VERSION@", project.config.forge_version
