@@ -113,6 +113,9 @@ class TileEntityFluidConverter extends TileEntity with IFluidHandler {
         FluidGroupRegistry.getGroup(fluidGroupId)
     }
 
+    private def hasOneValidElement: Boolean = getFluidGroup.getFluidElements
+        .foldLeft(false)((prev, element) => prev || element.getFluid != null)
+
     /**
      * Get the fluid element of a side.
      * @param side The side.
@@ -187,13 +190,15 @@ class TileEntityFluidConverter extends TileEntity with IFluidHandler {
 
     override def getTankInfo(from: ForgeDirection): Array[FluidTankInfo] = {
         val fluidGroup = getFluidGroup
-        if(fluidGroup == null) {
+        if(fluidGroup == null || !hasOneValidElement) {
             return new Array[FluidTankInfo](0)
         }
         val info = new Array[FluidTankInfo](fluidGroup.getFluidElements.length)
         for(i <- fluidGroup.getFluidElements.indices) {
             val element = fluidGroup.getFluidElements()(i)
-            info(i) = new FluidTankInfo(new FluidStack(element.getFluid, (units / element.getValue).toInt), CAPACITY)
+            if(element.getFluid != null) {
+                info(i) = new FluidTankInfo(new FluidStack(element.getFluid, (units / element.getValue).toInt), CAPACITY)
+            }
         }
         info
     }
