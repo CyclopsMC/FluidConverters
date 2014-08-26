@@ -17,7 +17,7 @@ import scala.collection.mutable.ListBuffer
 object ConfigLoader {
 
     final val BLOOD_TEMPLATE = "blood.json"
-    final val AQUALAVA_TEMPLATE = "aqualava.json"
+    final val AQUALAVA_TEMPLATE = "_aqualava.json"
     final val RESOURCE_TEMPLATE_PATH_BLOOD = "/assets/" + Reference.MOD_ID + "/" + BLOOD_TEMPLATE
     final val RESOURCE_TEMPLATE_PATH_AQUALAVA = "/assets/" + Reference.MOD_ID + "/" + AQUALAVA_TEMPLATE
     final val CONFIG_PATTERN = Pattern.compile("^[^_].*\\.json")
