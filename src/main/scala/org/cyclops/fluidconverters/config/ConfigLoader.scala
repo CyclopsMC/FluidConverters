@@ -17,8 +17,18 @@ import scala.collection.mutable.ListBuffer
 object ConfigLoader {
 
     final val BLOOD_TEMPLATE = "blood.json"
-    final val RESOURCE_TEMPLATE_PATH = "/assets/" + Reference.MOD_ID + "/" + BLOOD_TEMPLATE
+    final val AQUALAVA_TEMPLATE = "aqualava.json"
+    final val RESOURCE_TEMPLATE_PATH_BLOOD = "/assets/" + Reference.MOD_ID + "/" + BLOOD_TEMPLATE
+    final val RESOURCE_TEMPLATE_PATH_AQUALAVA = "/assets/" + Reference.MOD_ID + "/" + AQUALAVA_TEMPLATE
     final val CONFIG_PATTERN = Pattern.compile("^[^_].*\\.json")
+
+    private def createTemplate(configDirectory: String, name: String, path: String) {
+        val template = new File(configDirectory, name)
+        if (!template.exists()) {
+            val is = getClass.getResourceAsStream(path)
+            FileUtils.copyInputStreamToFile(is, template)
+        }
+    }
 
     /**
      * Initialize the config directory.
@@ -33,12 +43,9 @@ object ConfigLoader {
             rootFolder.mkdir()
         }
 
-        // Put the blood template file in the config dir if it is not in there yet.
-        val template = new File(configDirectory, BLOOD_TEMPLATE)
-        if (!template.exists()) {
-            val is = getClass.getResourceAsStream(RESOURCE_TEMPLATE_PATH)
-            FileUtils.copyInputStreamToFile(is, template)
-        }
+        // Put the template files in the config dir if it is not in there yet.
+        createTemplate(configDirectory, BLOOD_TEMPLATE, RESOURCE_TEMPLATE_PATH_BLOOD)
+        createTemplate(configDirectory, AQUALAVA_TEMPLATE, RESOURCE_TEMPLATE_PATH_AQUALAVA)
 
         rootFolder
     }

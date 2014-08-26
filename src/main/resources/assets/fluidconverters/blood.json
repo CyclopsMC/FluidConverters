@@ -1,17 +1,19 @@
 {
-    groupId : "aqualava",
-    groupName : "Aqua Lava",
+    groupId : "blood",
+    groupName : "Blood",
     fluidElements : [
         {
-            fluidName: "lava",
+            fluidName: "evilcraftblood",
             value: 1.0
         },
         {
-            fluidName: "water",
-            value: 2.0
+            fluidName: "life essence",
+            value: 1.0
+        },
+        {
+            fluidName: "blood",
+            value: 1.0
         }
 
-    ],
-    lossRatio : 1.0,
-    hasRecipe : true
+    ]
 }
