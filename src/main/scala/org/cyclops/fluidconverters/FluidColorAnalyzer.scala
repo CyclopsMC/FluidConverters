@@ -113,7 +113,7 @@ object FluidColorAnalyzer {
                 iconDomain = iconName.substring(0, index)
             }
         }
-        val resourceLocation = new ResourceLocation(iconDomain, "textures/blocks/%s.png".format(iconPath))
+        val resourceLocation = new ResourceLocation(iconDomain.toLowerCase, "textures/blocks/%s.png".format(iconPath))
 
         // Read the resource location
         val resource = Minecraft.getMinecraft.getResourceManager.getResource(resourceLocation)
