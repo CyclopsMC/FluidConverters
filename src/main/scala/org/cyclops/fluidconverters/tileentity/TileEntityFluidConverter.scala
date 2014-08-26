@@ -42,11 +42,13 @@ class TileEntityFluidConverter extends TileEntity with IFluidHandler {
 
     override def writeToNBT(tag: NBTTagCompound) {
         super.writeToNBT(tag)
-        tag.setString(BlockFluidConverter.NBTKEY_GROUP, fluidGroupId)
-        for(i <- fluidSides.indices) {
-            tag.setString(BlockFluidConverter.NBTKEY_SIDE.format(i), fluidSides(i))
+        if(fluidGroupId != null && !fluidGroupId.isEmpty) {
+            tag.setString(BlockFluidConverter.NBTKEY_GROUP, fluidGroupId)
+            for (i <- fluidSides.indices) {
+                tag.setString(BlockFluidConverter.NBTKEY_SIDE.format(i), fluidSides(i))
+            }
+            tag.setInteger(BlockFluidConverter.NBTKEY_UNITS, units)
         }
-        tag.setInteger(BlockFluidConverter.NBTKEY_UNITS, units)
     }
 
     def readConverterDataFromNBT(tag: NBTTagCompound) {

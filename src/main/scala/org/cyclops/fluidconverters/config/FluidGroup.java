@@ -39,6 +39,9 @@ public class FluidGroup {
 
     public FluidElement getFluidElement(String fluidName) {
         for(FluidElement fluidElement : getFluidElements()) {
+            if(fluidElement.getFluid() == null) {
+                return null;
+            }
             if(fluidElement.getFluid().getName().equals(fluidName)) {
                 return fluidElement;
             }

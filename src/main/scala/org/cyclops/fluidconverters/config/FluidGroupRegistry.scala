@@ -72,9 +72,11 @@ object FluidGroupRegistry {
                 val result = new ItemStack(BlockFluidConverter)
                 BlockFluidConverter.addGroupInfo(result, group)
                 for (element <- group.getFluidElements) {
-                    val container: ItemStack = FluidContainerRegistry.fillFluidContainer(new FluidStack(element.getFluid, FluidContainerRegistry.BUCKET_VOLUME), new ItemStack(Items.bucket))
-                    if (container != null) {
-                        group.registerRecipe(result, container)
+                    if(element.getFluid != null) {
+                        val container: ItemStack = FluidContainerRegistry.fillFluidContainer(new FluidStack(element.getFluid, FluidContainerRegistry.BUCKET_VOLUME), new ItemStack(Items.bucket))
+                        if (container != null) {
+                            group.registerRecipe(result, container)
+                        }
                     }
                 }
             }

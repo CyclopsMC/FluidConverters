@@ -37,7 +37,9 @@ class ItemBlockFluidConverter(block: Block) extends ItemBlock(block) {
             validContent = true
             if (Keyboard.isKeyDown(Keyboard.KEY_RSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
                 for (element <- group.getFluidElements) {
-                    infoList.add("%s%s: %.2f".format(EnumChatFormatting.GRAY, element.getFluid.getLocalizedName, element.getValue))
+                    if(element.getFluid != null) {
+                        infoList.add("%s%s: %.2f".format(EnumChatFormatting.GRAY, element.getFluid.getLocalizedName, element.getValue))
+                    }
                 }
             } else {
                 infoList.add("%s%s%s".format(EnumChatFormatting.GRAY, EnumChatFormatting.ITALIC,

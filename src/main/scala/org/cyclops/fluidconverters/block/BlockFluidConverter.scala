@@ -1,7 +1,9 @@
 package org.cyclops.fluidconverters.block
 
+import java.util
+
 import cpw.mods.fml.relauncher.{Side, SideOnly}
-import net.minecraft.block.BlockContainer
+import net.minecraft.block.{Block, BlockContainer}
 import net.minecraft.block.material.Material
 import net.minecraft.client.renderer.texture.IIconRegister
 import net.minecraft.creativetab.CreativeTabs
@@ -10,7 +12,7 @@ import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.{Item, ItemStack}
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.tileentity.TileEntity
-import net.minecraft.world.{IBlockAccess, World}
+import net.minecraft.world.{World, Explosion, IBlockAccess}
 import net.minecraftforge.common.util.ForgeDirection
 import net.minecraftforge.fluids.FluidContainerRegistry
 import org.cyclops.fluidconverters.{FluidColorAnalyzer, Reference}
@@ -20,12 +22,15 @@ import org.cyclops.fluidconverters.tileentity.TileEntityFluidConverter
 object BlockFluidConverter extends BlockContainer(Material.iron) {
 
     setBlockName(getUniqueName)
+    setHardness(5F)
     
     final val NAMEDID = "FluidConverter"
 
     final val NBTKEY_GROUP = "fluidGroupId"
     final val NBTKEY_SIDE = "fluidSide%s"
     final val NBTKEY_UNITS = "units"
+
+    private var NBT_CACHE : NBTTagCompound = null
 
     private def getUniqueName : String = "blocks.fluidConverter"
 
@@ -87,6 +92,25 @@ object BlockFluidConverter extends BlockContainer(Material.iron) {
         super.onBlockActivated(world, x, y, z, player, side, xPos, yPos, zPos)
     }
 
+    private def onPreBlockDestroyed(world: World, x: Int, y: Int, z: Int) {
+        val tile = world.getTileEntity(x, y, z)
+        if(tile != null && tile.isInstanceOf[TileEntityFluidConverter]) {
+            NBT_CACHE = tile.asInstanceOf[TileEntityFluidConverter].getNBTTagCompound
+        } else {
+            NBT_CACHE = null
+        }
+    }
+
+    override def breakBlock(world: World, x: Int, y: Int, z: Int, block: Block, meta: Int) {
+        onPreBlockDestroyed(world, x, y, z)
+        super.breakBlock(world, x, y, z, block, meta)
+    }
+
+    override def onBlockDestroyedByExplosion(world: World, x: Int, y: Int, z: Int, explosion: Explosion) {
+        onPreBlockDestroyed(world, x, y, z)
+        super.onBlockDestroyedByExplosion(world, x, y, z, explosion)
+    }
+
     @SideOnly(Side.CLIENT)
     override def getRenderBlockPass: Int = 1
 
@@ -94,6 +118,16 @@ object BlockFluidConverter extends BlockContainer(Material.iron) {
     override def colorMultiplier(world : IBlockAccess, x : Int, y : Int, z : Int): Int = {
         val tile = world.getTileEntity(x, y, z).asInstanceOf[TileEntityFluidConverter]
         FluidColorAnalyzer.getAverageColor(tile.getFluidGroup)
+    }
+
+    override def getDrops(world: World, x: Int, y: Int, z: Int, metadata: Int, fortune: Int): util.ArrayList[ItemStack] = {
+        val drops = new util.ArrayList[ItemStack]()
+        val itemStack = new ItemStack(getItemDropped(metadata, world.rand, fortune), 1, damageDropped(metadata))
+        if(NBT_CACHE != null) {
+            itemStack.setTagCompound(NBT_CACHE)
+        }
+        drops.add(itemStack)
+        drops
     }
     
 }
