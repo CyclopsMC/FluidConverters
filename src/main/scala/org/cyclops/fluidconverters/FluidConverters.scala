@@ -10,10 +10,9 @@ import net.minecraftforge.client.event.TextureStitchEvent
 import net.minecraftforge.common.MinecraftForge
 import org.cyclops.fluidconverters.block.{ItemBlockFluidConverter, BlockFluidConverter}
 import cpw.mods.fml.common.{SidedProxy, Mod}
-import cpw.mods.fml.common.event.FMLInitializationEvent
-import cpw.mods.fml.common.event.FMLPostInitializationEvent
-import cpw.mods.fml.common.event.FMLPreInitializationEvent
+import cpw.mods.fml.common.event.{FMLServerStartingEvent, FMLInitializationEvent, FMLPostInitializationEvent, FMLPreInitializationEvent}
 import cpw.mods.fml.common.registry.GameRegistry
+import org.cyclops.fluidconverters.command.CommandGetFluids
 import org.cyclops.fluidconverters.config.{FluidGroupRegistry, ConfigLoader}
 import org.cyclops.fluidconverters.render.RenderFluidConverter
 import org.cyclops.fluidconverters.tileentity.TileEntityFluidConverter
@@ -55,6 +54,11 @@ object FluidConverters {
         ConfigLoader.findFluidGroups(rootFolder).foreach(fluidGroup => FluidGroupRegistry.registerGroup(fluidGroup))
         FluidColorAnalyzer.init()
         FluidGroupRegistry.registerRecipes()
+    }
+
+    @EventHandler
+    def onServerStarting(event: FMLServerStartingEvent) {
+        event.registerServerCommand(new CommandGetFluids())
     }
     
     private def registerFluidConverterBlock() {
