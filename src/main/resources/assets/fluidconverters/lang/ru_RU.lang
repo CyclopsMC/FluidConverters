@@ -1,0 +1,8 @@
+# General
+info.moreInfo=Shift для большей информации
+info.invalid=Неверный преобразователь
+itemGroup.FluidConverters=Fluid Converters
+
+# Blocks
+tile.blocks.fluidConverter.name=Преобразователь жидкостей
+tile.blocks.fluidConverter.converter=Преобразователь
