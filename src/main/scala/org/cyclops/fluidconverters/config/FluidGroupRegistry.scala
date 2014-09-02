@@ -25,13 +25,20 @@ object FluidGroupRegistry {
      * @return If the adding succeeded.
      */
     def registerGroup(group: FluidGroup) : Boolean = {
+        var foundOne = false
         for(element <- group.getFluidElements) {
             if(!FluidRegistry.isFluidRegistered(element.getFluidName)) {
                 LoggerHelper.log(Level.WARN, "The fluid %s in group %s is not registered because it does not exist."
                         .format(element.getFluidName, group.getGroupId))
+            } else {
+                foundOne = true
             }
         }
-        groups.put(group.getGroupId, group) != None
+        if(foundOne) {
+            groups.put(group.getGroupId, group)
+            return true
+        }
+        false
     }
 
     /**
