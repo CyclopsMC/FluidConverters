@@ -9,7 +9,7 @@ import net.minecraft.client.Minecraft
 import net.minecraftforge.client.event.TextureStitchEvent
 import net.minecraftforge.common.MinecraftForge
 import org.cyclops.fluidconverters.block.{ItemBlockFluidConverter, BlockFluidConverter}
-import cpw.mods.fml.common.{SidedProxy, Mod}
+import cpw.mods.fml.common.{FMLCommonHandler, SidedProxy, Mod}
 import cpw.mods.fml.common.event.{FMLServerStartingEvent, FMLInitializationEvent, FMLPostInitializationEvent, FMLPreInitializationEvent}
 import cpw.mods.fml.common.registry.GameRegistry
 import org.cyclops.fluidconverters.command.CommandGetFluids
@@ -52,7 +52,12 @@ object FluidConverters {
     def postInit(event: FMLPostInitializationEvent) {
         LoggerHelper.log("Loading fluid converters configs...")
         ConfigLoader.findFluidGroups(rootFolder).foreach(fluidGroup => FluidGroupRegistry.registerGroup(fluidGroup))
-        FluidColorAnalyzer.init()
+        if(!FluidGroupRegistry.getGroups.isEmpty) {
+            BlockFluidConverter.setCreativeTab(FluidConvertersTab)
+        }
+        if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
+            FluidColorAnalyzer.init()
+        }
         FluidGroupRegistry.registerRecipes()
     }
 
@@ -63,7 +68,6 @@ object FluidConverters {
     
     private def registerFluidConverterBlock() {
         GameRegistry.registerBlock(BlockFluidConverter, classOf[ItemBlockFluidConverter], BlockFluidConverter.NAMEDID)
-        BlockFluidConverter.setCreativeTab(FluidConvertersTab)
         GameRegistry.registerTileEntity(classOf[TileEntityFluidConverter], BlockFluidConverter.NAMEDID)
     }
 
