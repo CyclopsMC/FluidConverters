@@ -75,6 +75,9 @@ object FluidColorAnalyzer {
         }
 
         val icon = block.getIcon(0, 0)
+        if(block == null) {
+            return default
+        }
         val image = readIcon(icon)
 
         val width = image.getWidth
