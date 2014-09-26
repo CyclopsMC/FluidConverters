@@ -5,6 +5,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -39,13 +40,17 @@ public class CommandGetFluids implements ICommand {
         return new LinkedList<String>();
     }
 
+    protected String getFluidName(Fluid fluid) {
+        return fluid.getLocalizedName(new FluidStack(fluid, 1));
+    }
+
     @Override
     public void processCommand(ICommandSender commandSender, String[] astring) {
         if(astring.length == 1) {
             Fluid fluid = FluidRegistry.getFluid(astring[0]);
             if(fluid != null) {
                 commandSender.addChatMessage(
-                        new ChatComponentText(fluid.getLocalizedName()));
+                        new ChatComponentText(getFluidName(fluid) + ": " + fluid.getName()));
             }
         }
     }
