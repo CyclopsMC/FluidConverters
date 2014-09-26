@@ -3,14 +3,14 @@ package org.cyclops.fluidconverters
 import java.io.File
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent
-import cpw.mods.fml.common.gameevent.PlayerEvent.ItemCraftedEvent
 import cpw.mods.fml.relauncher.{SideOnly, Side}
 import net.minecraft.client.Minecraft
 import net.minecraftforge.client.event.TextureStitchEvent
 import net.minecraftforge.common.MinecraftForge
 import org.cyclops.fluidconverters.block.{ItemBlockFluidConverter, BlockFluidConverter}
+import org.cyclops.fluidconverters.modcompat.waila.Waila
 import cpw.mods.fml.common.{FMLCommonHandler, SidedProxy, Mod}
-import cpw.mods.fml.common.event.{FMLServerStartingEvent, FMLInitializationEvent, FMLPostInitializationEvent, FMLPreInitializationEvent}
+import cpw.mods.fml.common.event._
 import cpw.mods.fml.common.registry.GameRegistry
 import org.cyclops.fluidconverters.command.CommandGetFluids
 import org.cyclops.fluidconverters.config.{FluidGroupRegistry, ConfigLoader}
@@ -46,16 +46,18 @@ object FluidConverters {
     def init(event: FMLInitializationEvent) {
         registerFluidConverterBlock()
         proxy.registerRenderers()
+        FMLInterModComms.sendMessage("Waila", "register",
+            "org.cyclops.fluidconverters.modcompat.waila.Waila.callbackRegister")
     }
     
     @EventHandler
     def postInit(event: FMLPostInitializationEvent) {
         LoggerHelper.log("Loading fluid converters configs...")
         ConfigLoader.findFluidGroups(rootFolder).foreach(fluidGroup => FluidGroupRegistry.registerGroup(fluidGroup))
-        if(!FluidGroupRegistry.getGroups.isEmpty) {
+        if(FluidGroupRegistry.getGroups.nonEmpty) {
             BlockFluidConverter.setCreativeTab(FluidConvertersTab)
         }
-        if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
+        if(FMLCommonHandler.instance().getEffectiveSide == Side.CLIENT) {
             FluidColorAnalyzer.init()
         }
         FluidGroupRegistry.registerRecipes()

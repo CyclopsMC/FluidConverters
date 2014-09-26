@@ -1,3 +1,20 @@
+compileJava {
+    repositories {
+        maven {
+            name "Mobius Repo"
+            url "http://mobiusstrip.eu/maven"
+        }
+        maven {
+            name 'CB Maven FS'
+            url "http://chickenbones.net/maven/"
+        }
+    }
+
+    dependencies {
+        compile "mcp.mobius.waila:Waila:${config.waila_version}"
+    }
+}
+
 minecraft {
     version = "${config.minecraft_version}-${config.forge_version}"
     runDir = "eclipse/assets"
