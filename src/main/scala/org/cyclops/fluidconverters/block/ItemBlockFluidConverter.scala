@@ -56,11 +56,9 @@ class ItemBlockFluidConverter(block: Block) extends ItemBlock(block) {
 
     @SideOnly(Side.CLIENT)
     override def getColorFromItemStack(itemStack : ItemStack, renderPass : Int): Int = {
-        if(renderPass == 1) {
-            val group = getFluidGroup(itemStack)
-            if (group != null) {
-                return FluidColorAnalyzer.getAverageColor(group)
-            }
+        val group = getFluidGroup(itemStack)
+        if (group != null) {
+            BlockFluidConverter.COLOR_CACHE = FluidColorAnalyzer.getAverageColor(group)
         }
         super.getColorFromItemStack(itemStack, renderPass)
     }

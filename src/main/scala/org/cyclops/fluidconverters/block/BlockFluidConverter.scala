@@ -32,6 +32,8 @@ object BlockFluidConverter extends BlockContainer(Material.iron) {
 
     private var NBT_CACHE : NBTTagCompound = null
 
+    var COLOR_CACHE = 0
+
     private def getUniqueName : String = "blocks.fluidConverter"
 
     @SideOnly(Side.CLIENT)
@@ -117,6 +119,9 @@ object BlockFluidConverter extends BlockContainer(Material.iron) {
         val tile = world.getTileEntity(x, y, z).asInstanceOf[TileEntityFluidConverter]
         FluidColorAnalyzer.getAverageColor(tile.getFluidGroup)
     }
+
+    @SideOnly(Side.CLIENT)
+    override def getRenderColor(meta : Int): Int = COLOR_CACHE
 
     override def getDrops(world: World, x: Int, y: Int, z: Int, metadata: Int, fortune: Int): util.ArrayList[ItemStack] = {
         val drops = new util.ArrayList[ItemStack]()
