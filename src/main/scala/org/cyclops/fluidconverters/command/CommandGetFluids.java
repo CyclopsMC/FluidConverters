@@ -50,8 +50,20 @@ public class CommandGetFluids implements ICommand {
             Fluid fluid = FluidRegistry.getFluid(astring[0]);
             if(fluid != null) {
                 commandSender.addChatMessage(
-                        new ChatComponentText(getFluidName(fluid) + ": " + fluid.getName()));
+                        new ChatComponentText(fluid.getName() + " (" + getFluidName(fluid) + ")"));
             }
+        } else {
+            StringBuilder builder = new StringBuilder();
+            for(Fluid fluid : getFluids()) {
+                if(builder.length() > 0) {
+                    builder.append(", ");
+                }
+                builder.append(fluid.getName());
+                builder.append(" (");
+                builder.append(getFluidName(fluid));
+                builder.append(")");
+            }
+            commandSender.addChatMessage(new ChatComponentText(builder.toString()));
         }
     }
 
