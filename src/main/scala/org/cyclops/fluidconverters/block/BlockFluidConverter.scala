@@ -84,12 +84,10 @@ object BlockFluidConverter extends BlockContainer(Material.iron) {
             if(tile.getFluidGroup != null && tile.getFluidGroup.getFluidElement(fluid) != null) {
                 tile.setFluid(ForgeDirection.getOrientation(side), fluid)
             }
-            return true
         } else {
             tile.setFluid(ForgeDirection.getOrientation(side), null)
         }
-        world.markBlockForUpdate(x, y, z)
-        super.onBlockActivated(world, x, y, z, player, side, xPos, yPos, zPos)
+        true
     }
 
     private def onPreBlockDestroyed(world: World, x: Int, y: Int, z: Int) {
