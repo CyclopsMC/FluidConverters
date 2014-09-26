@@ -1,0 +1,11 @@
+apply plugin: "curseforge"
+apply plugin: 'maven'
+
+if(project.hasProperty("curseforge_key") && project.hasProperty("changelog")) {
+    curse {
+        apiKey = project.curseforge_key
+        projectId = "223737" // my project url is http://minecraft.curseforge.com/mc-mods/223737-fluidconverters
+        changelog = new File(project.changelog).text
+        releaseType = "beta"
+    }
+}
