@@ -67,6 +67,10 @@ object RenderFluidConverter extends TileEntitySpecialRenderer {
         GL11.glColor4f(1, 1, 1, 1)
         GL11.glDisable(GL11.GL_BLEND)
 
+        // Correct color & lighting
+        GL11.glColor4f(1, 1, 1, 1)
+        GL11.glDisable(GL11.GL_LIGHTING)
+
         // Set to current relative player location
         GL11.glTranslated(x, y, z)
 
