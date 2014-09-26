@@ -1,6 +1,7 @@
 package org.cyclops.fluidconverters
 
 import java.awt.image.BufferedImage
+import java.io.FileNotFoundException
 import javax.imageio.ImageIO
 
 import net.minecraft.client.Minecraft
@@ -116,11 +117,14 @@ object FluidColorAnalyzer {
                 iconDomain = iconName.substring(0, index)
             }
         }
-        val resourceLocation = new ResourceLocation(iconDomain.toLowerCase, "textures/blocks/%s.png".format(iconPath))
-
         // Read the resource location
-        val resource = Minecraft.getMinecraft.getResourceManager.getResource(resourceLocation)
-        ImageIO.read(resource.getInputStream)
+        try {
+            val resourceLocation = new ResourceLocation(iconDomain.toLowerCase, "textures/blocks/%s.png".format(iconPath))
+            val resource = Minecraft.getMinecraft.getResourceManager.getResource(resourceLocation)
+            ImageIO.read(resource.getInputStream)
+        } catch {
+            case e: FileNotFoundException => return null
+        }
     }
 
 }
