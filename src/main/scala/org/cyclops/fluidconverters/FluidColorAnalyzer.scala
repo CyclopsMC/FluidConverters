@@ -75,7 +75,12 @@ object FluidColorAnalyzer {
             return default
         }
 
-        val icon = block.getIcon(0, 0)
+        var icon: IIcon = null
+        try {
+            icon = block.getIcon(0, 0)
+        } catch {
+            case e: NullPointerException => return default
+        }
         if(icon == null) {
             return default
         }
