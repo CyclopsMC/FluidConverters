@@ -132,5 +132,11 @@ object BlockFluidConverter extends BlockContainer(Material.iron) {
         drops.add(itemStack)
         drops
     }
+
+    override def getLightValue(world: IBlockAccess, x: Int, y: Int, z: Int): Int = {
+        if(world.getTileEntity(x, y, z) != null) return world.getTileEntity(x, y, z)
+            .asInstanceOf[TileEntityFluidConverter].luminosity
+        super.getLightValue(world, x, y, z)
+    }
     
 }

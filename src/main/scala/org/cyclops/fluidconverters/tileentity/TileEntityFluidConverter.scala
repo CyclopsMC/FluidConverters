@@ -21,6 +21,20 @@ class TileEntityFluidConverter extends TileEntity with IFluidHandler {
     private var fluidGroupId : String = null
     private val fluidSides : Array[String] = new Array[String](ForgeDirection.VALID_DIRECTIONS.size)
     private var units = 0; // Used as a general fluid amount, that can be converted into group fluids.
+
+    private var _luminosity = -1
+
+    def luminosity = {
+        if(_luminosity == -1) {
+            _luminosity = ForgeDirection.VALID_DIRECTIONS
+                .map(side => getFluidElement(side))
+                .filter(el => el != null && el.getFluid != null)
+                .foldLeft(0)((prev, el) => prev + el.getFluid.getLuminosity) / ForgeDirection.VALID_DIRECTIONS.size
+        }
+        _luminosity
+    }
+
+    private def resetLuminosity() = _luminosity = -1
     
     /**
      * Send a world update for the coordinates of this tile entity.
@@ -144,6 +158,7 @@ class TileEntityFluidConverter extends TileEntity with IFluidHandler {
                 case _ => fluidName
             }
         }
+        resetLuminosity()
     }
 
     override def fill(from: ForgeDirection, resource: FluidStack, doFill: Boolean): Int = {
