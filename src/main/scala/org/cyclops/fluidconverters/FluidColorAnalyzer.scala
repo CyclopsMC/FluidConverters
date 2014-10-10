@@ -6,7 +6,7 @@ import javax.imageio.ImageIO
 
 import net.minecraft.client.Minecraft
 import net.minecraft.util.{ResourceLocation, IIcon}
-import net.minecraftforge.fluids.{FluidRegistry, Fluid}
+import net.minecraftforge.fluids.{FluidStack, FluidRegistry, Fluid}
 import org.cyclops.fluidconverters.config.{FluidGroup, FluidGroupRegistry}
 
 
@@ -70,17 +70,16 @@ object FluidColorAnalyzer {
     private def calculateAverageColor(fluid: Fluid): Int = {
         val default = fluid.getColor
 
-        val block = fluid.getBlock
-        if(block == null) {
-            return default
-        }
-
         var icon: IIcon = null
         try {
-            icon = block.getIcon(0, 0)
+            icon = fluid.getIcon(new FluidStack(fluid, 1))
+            if(icon == null) {
+                icon = fluid.getBlock.getIcon(0, 0)
+            }
         } catch {
             case e: NullPointerException => return default
         }
+
         if(icon == null) {
             return default
         }

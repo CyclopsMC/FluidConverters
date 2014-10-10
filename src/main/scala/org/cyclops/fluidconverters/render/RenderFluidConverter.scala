@@ -87,7 +87,7 @@ object RenderFluidConverter extends TileEntitySpecialRenderer {
 
             var icon = stubIcon
             if(element != null) {
-                icon = element.getFluid.getIcon
+                icon = element.getIcon(side, true)
             }
 
             val t = Tessellator.instance
@@ -95,10 +95,10 @@ object RenderFluidConverter extends TileEntitySpecialRenderer {
 
             // Make the quad
             val c = coordinates(side.ordinal())
-            t.addVertexWithUV(c(0)(0), c(0)(1), c(0)(2), icon.getMinU, icon.getMinV)
-            t.addVertexWithUV(c(1)(0), c(1)(1), c(1)(2), icon.getMinU, icon.getMaxV)
-            t.addVertexWithUV(c(2)(0), c(2)(1), c(2)(2), icon.getMaxU, icon.getMaxV)
-            t.addVertexWithUV(c(3)(0), c(3)(1), c(3)(2), icon.getMaxU, icon.getMinV)
+            t.addVertexWithUV(c(0)(0), c(0)(1), c(0)(2), icon.getMinU, icon.getMaxV)
+            t.addVertexWithUV(c(1)(0), c(1)(1), c(1)(2), icon.getMinU, icon.getMinV)
+            t.addVertexWithUV(c(2)(0), c(2)(1), c(2)(2), icon.getMaxU, icon.getMinV)
+            t.addVertexWithUV(c(3)(0), c(3)(1), c(3)(2), icon.getMaxU, icon.getMaxV)
 
             // Flush!
             t.draw()
