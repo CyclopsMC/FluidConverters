@@ -1,0 +1,17 @@
+[
+{
+  "modid": "fluidconverters",
+  "name": "FluidConverters",
+  "description": "A mod for converting fluids.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "logoFile": "assets/fluidconverters/textures/logo.png",
+  "url": "https://github.com/CyclopsMC/FluidConverters",
+  "updateUrl": "todo",
+  "authorList": [ immortaleeb ],
+  "credits": "immortaleeb",
+  "parent": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
