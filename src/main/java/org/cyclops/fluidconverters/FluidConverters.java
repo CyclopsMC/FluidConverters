@@ -11,6 +11,12 @@ import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.init.ModBaseVersionable;
 import org.cyclops.cyclopscore.init.RecipeHandler;
 import org.cyclops.cyclopscore.proxy.ICommonProxy;
+import org.cyclops.fluidconverters.fluidgroup.FluidGroup;
+import org.cyclops.fluidconverters.fluidgroup.FluidGroupsLoader;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 
 /**
  * The main mod class of this mod.
@@ -26,6 +32,8 @@ import org.cyclops.cyclopscore.proxy.ICommonProxy;
         guiFactory = "org.cyclops.fluidconverters.GuiConfigOverview$ExtendedConfigGuiFactory"
 )
 public class FluidConverters extends ModBaseVersionable {
+
+    private FluidGroupsLoader fluidGroupsLoader;
     
     /**
      * The proxy of this mod, depending on 'side' a different proxy will be inside this field.
@@ -57,6 +65,13 @@ public class FluidConverters extends ModBaseVersionable {
     @Override
     public void preInit(FMLPreInitializationEvent event) {
         super.preInit(event);
+
+        // Create the fluid groups loader
+        try {
+            fluidGroupsLoader = new FluidGroupsLoader(new File(event.getModConfigurationDirectory(), Reference.MOD_ID));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     
     /**
@@ -77,6 +92,12 @@ public class FluidConverters extends ModBaseVersionable {
     @Override
     public void postInit(FMLPostInitializationEvent event) {
         super.postInit(event);
+
+        // Load all fluid groups
+        List<FluidGroup> fluidGroups = fluidGroupsLoader.load();
+        for (FluidGroup group : fluidGroups) {
+            clog("Loaded fluid group '" + group.getGroupName() + "' (" + group.getGroupId() + ")");
+        }
     }
     
     /**
