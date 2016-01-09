@@ -8,9 +8,12 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.config.ConfigHandler;
+import org.cyclops.cyclopscore.config.extendedconfig.BlockItemConfigReference;
+import org.cyclops.cyclopscore.init.ItemCreativeTab;
 import org.cyclops.cyclopscore.init.ModBaseVersionable;
 import org.cyclops.cyclopscore.init.RecipeHandler;
 import org.cyclops.cyclopscore.proxy.ICommonProxy;
+import org.cyclops.fluidconverters.block.BlockFluidConverterConfig;
 import org.cyclops.fluidconverters.fluidgroup.FluidGroup;
 import org.cyclops.fluidconverters.fluidgroup.FluidGroupRegistry;
 import org.cyclops.fluidconverters.fluidgroup.FluidGroupsLoader;
@@ -140,13 +143,17 @@ public class FluidConverters extends ModBaseVersionable {
 
     @Override
     public CreativeTabs constructDefaultCreativeTab() {
-        // return new ItemCreativeTab(this, new ItemConfigReference(SOME BLOCK OR ITEM INSTANCE));
-        return null;
+        return new ItemCreativeTab(this, new BlockItemConfigReference(BlockFluidConverterConfig.class));
     }
 
     @Override
     public void onGeneralConfigsRegister(ConfigHandler configHandler) {
         configHandler.add(new GeneralConfig());
+    }
+
+    @Override
+    public void onMainConfigsRegister(ConfigHandler configHandler) {
+        configHandler.add(new BlockFluidConverterConfig());
     }
 
     @Override
