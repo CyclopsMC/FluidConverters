@@ -141,7 +141,11 @@ public class FluidGroupsLoader {
             String fluidName = getMandatoryPrimitiveProperty(fluidElementObject, "fluidName", String.class);
             float value = getMandatoryPrimitiveProperty(fluidElementObject, "value", Float.class);
 
-            fluidElementList.add(new FluidGroup.FluidElement(fluidName, value));
+            try {
+                fluidElementList.add(new FluidGroup.FluidElement(fluidName, value));
+            } catch (FluidGroup.NoSuchFluidException e) {
+                throw new FluidGroupFormatException(e.getMessage());
+            }
         }
 
         return fluidElementList;

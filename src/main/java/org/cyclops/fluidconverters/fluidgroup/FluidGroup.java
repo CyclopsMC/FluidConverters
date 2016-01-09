@@ -2,6 +2,8 @@ package org.cyclops.fluidconverters.fluidgroup;
 
 import lombok.Data;
 import lombok.NonNull;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 
 import java.util.List;
 
@@ -22,9 +24,22 @@ public class FluidGroup {
 
     @Data
     public static class FluidElement {
-        @NonNull
-        private String fluidName;
-        @NonNull
+        private Fluid fluid;
         private float value;
+
+        public FluidElement(String fluidName, float value) throws NoSuchFluidException {
+            // Find the fluid with the given name
+            this.fluid = FluidRegistry.getFluid(fluidName);
+            if (this.fluid == null)
+                throw new NoSuchFluidException("No fluid with the name '" + fluidName + "' could be found");
+
+            this.value = value;
+        }
+    }
+
+    public static class NoSuchFluidException extends Exception {
+        public NoSuchFluidException(String message) {
+            super(message);
+        }
     }
 }
