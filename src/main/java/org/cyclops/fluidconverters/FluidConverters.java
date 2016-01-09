@@ -12,10 +12,12 @@ import org.cyclops.cyclopscore.init.ModBaseVersionable;
 import org.cyclops.cyclopscore.init.RecipeHandler;
 import org.cyclops.cyclopscore.proxy.ICommonProxy;
 import org.cyclops.fluidconverters.fluidgroup.FluidGroup;
+import org.cyclops.fluidconverters.fluidgroup.FluidGroupRegistry;
 import org.cyclops.fluidconverters.fluidgroup.FluidGroupsLoader;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -95,8 +97,14 @@ public class FluidConverters extends ModBaseVersionable {
 
         // Load all fluid groups
         List<FluidGroup> fluidGroups = fluidGroupsLoader.load();
-        for (FluidGroup group : fluidGroups) {
-            clog("Loaded fluid group '" + group.getGroupName() + "' (" + group.getGroupId() + ")");
+        // Add them to the registry
+        FluidGroupRegistry.registerFluidGroupList(fluidGroups);
+
+        // Print some basic info
+        Iterator<FluidGroup> it = FluidGroupRegistry.iterator();
+        while (it.hasNext()) {
+            FluidGroup group = it.next();
+            clog("Registered fluid group '" + group.getGroupName() + "' (" + group.getGroupId() + ")");
         }
     }
     
