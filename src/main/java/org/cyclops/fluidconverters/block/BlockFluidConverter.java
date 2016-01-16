@@ -1,15 +1,40 @@
 package org.cyclops.fluidconverters.block;
 
+import com.google.common.collect.Lists;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
 import org.cyclops.cyclopscore.config.configurable.ConfigurableBlockContainer;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
+import org.cyclops.fluidconverters.fluidgroup.FluidGroup;
+import org.cyclops.fluidconverters.fluidgroup.FluidGroupRegistry;
 import org.cyclops.fluidconverters.tileentity.TileFluidConverter;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
 
 /**
  * A block that converts fluids, registered as fluid groups in the FluidGroupRegistry.
  * @author immortaleeb
  */
 public class BlockFluidConverter extends ConfigurableBlockContainer {
+
+    // NBT key for the group id
+    public static final String NBTKEY_GROUPID = "fluidGroupId";
+
+    private static NBTTagCompound NBT_CACHE = null;
 
     private static BlockFluidConverter _instance = null;
 
@@ -29,5 +54,60 @@ public class BlockFluidConverter extends ConfigurableBlockContainer {
      */
     public BlockFluidConverter(ExtendedConfig eConfig) {
         super(eConfig, Material.iron, TileFluidConverter.class);
+    }
+
+    private void addFluidGroupInfo(ItemStack itemStack, FluidGroup fluidGroup) {
+        NBTTagCompound tagCompound = itemStack.getTagCompound();
+        if (tagCompound == null) tagCompound = new NBTTagCompound();
+        tagCompound.setString(NBTKEY_GROUPID, fluidGroup.getGroupId());
+        itemStack.setTagCompound(tagCompound);
+    }
+
+    @Override
+    public void getSubBlocks(Item itemIn, CreativeTabs tab, List<ItemStack> list) {
+        Iterator<FluidGroup> it = FluidGroupRegistry.iterator();
+        while (it.hasNext()) {
+            FluidGroup fluidGroup = it.next();
+            ItemStack itemStack = new ItemStack(this);
+            addFluidGroupInfo(itemStack, fluidGroup);
+            list.add(itemStack);
+        }
+    }
+
+    @Override
+    public void onBlockPlacedBy(World world, BlockPos blockPos, IBlockState blockState, EntityLivingBase entity, ItemStack stack) {
+        TileEntity tile = world.getTileEntity(blockPos);
+        NBTTagCompound tagCompound = stack.getTagCompound();
+        if (tile != null && tagCompound != null) {
+            ((TileFluidConverter) tile).readStateFromNBT(tagCompound);
+        }
+    }
+
+    @Override
+    protected void onPreBlockDestroyed(World world, BlockPos blockPos) {
+        TileEntity tile = world.getTileEntity(blockPos);
+        if (tile != null && tile instanceof TileFluidConverter) {
+            NBT_CACHE = ((TileFluidConverter) tile).getNBTTagCompound();
+        } else {
+            NBT_CACHE = null;
+        }
+        super.onPreBlockDestroyed(world, blockPos);
+    }
+
+    @Override
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side, float hitX, float hitY, float hitZ) {
+        // DEBUG
+        TileEntity tile = world.getTileEntity(pos);
+        player.addChatComponentMessage(new ChatComponentText("fluid group: " + ((TileFluidConverter) tile).getFluidGroup()));
+        return super.onBlockActivated(world, pos, state, player, side, hitX, hitY, hitZ);
+    }
+
+    @Override
+    public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState blockState, int fortune) {
+        ItemStack itemStack = new ItemStack(getItemDropped(blockState, new Random(), fortune), 1, damageDropped(blockState));
+        if (NBT_CACHE != null) {
+            itemStack.setTagCompound(NBT_CACHE);
+        }
+        return Lists.newArrayList(itemStack);
     }
 }
