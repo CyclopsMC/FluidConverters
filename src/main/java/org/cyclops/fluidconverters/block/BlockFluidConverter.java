@@ -119,9 +119,9 @@ public class BlockFluidConverter extends ConfigurableBlockContainer {
 
         // DEBUG
         player.addChatComponentMessage(new ChatComponentText("fluid group: " + tile.getFluidGroup().getGroupName()));
-        for (Map.Entry<EnumFacing, Fluid> entry : tile.getFluidOutputs().entrySet()) {
+        for (Map.Entry<EnumFacing, FluidGroup.FluidElement> entry : tile.getFluidOutputs().entrySet()) {
             player.addChatComponentMessage(new ChatComponentText(
-                    entry.getKey().toString() + ": " + entry.getValue().getName()
+                    entry.getKey().toString() + ": " + entry.getValue().getFluid().getName()
             ));
         }
 
