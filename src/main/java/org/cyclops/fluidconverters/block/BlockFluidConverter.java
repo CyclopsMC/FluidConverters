@@ -15,6 +15,8 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
 import org.cyclops.cyclopscore.config.configurable.ConfigurableBlockContainer;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.fluidconverters.fluidgroup.FluidGroup;
@@ -23,6 +25,7 @@ import org.cyclops.fluidconverters.tileentity.TileFluidConverter;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -33,6 +36,12 @@ public class BlockFluidConverter extends ConfigurableBlockContainer {
 
     // NBT key for the group id
     public static final String NBTKEY_GROUPID = "fluidGroupId";
+    // NBT key prefix for a side
+    public static final String NBTKEY_FLUIDSIDE_PREFIX = "fluidSide.";
+    // Returns the NBT key for a given fluid side
+    public static final String NBT_KEY_FLUIDSIDE(EnumFacing facing) {
+        return NBTKEY_FLUIDSIDE_PREFIX + facing.toString();
+    }
 
     private static NBTTagCompound NBT_CACHE = null;
 
@@ -96,10 +105,27 @@ public class BlockFluidConverter extends ConfigurableBlockContainer {
 
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side, float hitX, float hitY, float hitZ) {
+        ItemStack itemStack = player.inventory.getCurrentItem();
+        TileFluidConverter tile = (TileFluidConverter) world.getTileEntity(pos);
+
+        if (itemStack != null && FluidContainerRegistry.isFilledContainer(itemStack)) {
+            // Player has a container with a valid fluid: set the output of the tile entity
+            Fluid fluid = FluidContainerRegistry.getFluidForFilledItem(itemStack).getFluid();
+            tile.setFluidOutput(side, fluid);
+        } else {
+            // No valid fluid: clear the output on the given side
+            tile.setFluidOutput(side, null);
+        }
+
         // DEBUG
-        TileEntity tile = world.getTileEntity(pos);
-        player.addChatComponentMessage(new ChatComponentText("fluid group: " + ((TileFluidConverter) tile).getFluidGroup()));
-        return super.onBlockActivated(world, pos, state, player, side, hitX, hitY, hitZ);
+        player.addChatComponentMessage(new ChatComponentText("fluid group: " + tile.getFluidGroup().getGroupName()));
+        for (Map.Entry<EnumFacing, Fluid> entry : tile.getFluidOutputs().entrySet()) {
+            player.addChatComponentMessage(new ChatComponentText(
+                    entry.getKey().toString() + ": " + entry.getValue().getName()
+            ));
+        }
+
+        return true;
     }
 
     @Override
