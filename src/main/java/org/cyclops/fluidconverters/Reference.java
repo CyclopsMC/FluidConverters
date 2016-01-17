@@ -1,5 +1,9 @@
 package org.cyclops.fluidconverters;
 
+import org.cyclops.cyclopscore.config.configurable.ConfigurableBlock;
+import org.cyclops.cyclopscore.config.configurable.ConfigurableBlockContainer;
+import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
+
 /**
  * Class that can hold basic static things that are better not hard-coded
  * like mod details, texture paths, ID's...
@@ -43,4 +47,39 @@ public class Reference {
     public static final String MOD_DEPENDENCIES =
             "required-after:" + MOD_FORGE       + "@[" + MOD_FORGE_VERSION_MIN       + ",);" +
             "required-after:" + MOD_CYCLOPSCORE + "@[" + MOD_CYCLOPSCORE_VERSION_MIN + ",);";
+
+    /**
+     * Adds "modid:" as a prefix to the given string.
+     * @return The given string prefixed with "modid:"
+     */
+    public static final String prefixModId(String s) {
+        return MOD_ID + ":" + s;
+    }
+
+    /**
+     * Prepends "modid:" to the named id of the given config.
+     * @param extendedConfig config which provides a namedid
+     * @return named id prepended with "modid:"
+     */
+    public static final String prefixModId(ExtendedConfig<?> extendedConfig) {
+        return prefixModId(extendedConfig.getNamedId());
+    }
+
+    /**
+     * Prepends "modid:" to the named id of the given block
+     * @param block configurable block which provides a namedid
+     * @return named id of the block prepended with "modid:"
+     */
+    public static final String prefixModId(ConfigurableBlock block) {
+        return prefixModId(block.getConfig());
+    }
+
+    /**
+     * Prepends "modid:" to the named id of the given block container
+     * @param block configurable block container which provides a namedid
+     * @return named id of the block container prepended with "modid:"
+     */
+    public static final String prefixModId(ConfigurableBlockContainer block) {
+        return prefixModId(block.getConfig());
+    }
 }
