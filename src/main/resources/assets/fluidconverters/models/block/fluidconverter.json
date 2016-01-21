@@ -1,0 +1,7 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "fluidconverters:blocks/fluidconverter_center",
+    "up": "fluidconverters:blocks/fluidconverter_open"
+  }
+}

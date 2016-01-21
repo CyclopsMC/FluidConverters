@@ -45,12 +45,13 @@ public class TileFluidConverter extends CyclopsTileEntity implements IFluidHandl
         this.fluidGroup = fluidGroupId != null ? FluidGroupRegistry.getFluidGroupById(fluidGroupId) : null;
 
         // Fluid outputs
-        for (EnumFacing facing : EnumFacing.values()) {
-            String fluidName = nbt.getString(BlockFluidConverter.NBT_KEY_FLUIDSIDE(facing));
-            Fluid fluid = fluidName != null ? FluidRegistry.getFluid(fluidName) : null;
+        Map<EnumFacing, Fluid> fluidMap = BlockFluidConverter.getFluidOutputsFromNBT(nbt);
+        for (Map.Entry<EnumFacing, Fluid> entry : fluidMap.entrySet()) {
+            EnumFacing facing = entry.getKey();
+            Fluid fluid = entry.getValue();
+
             FluidGroup.FluidElement fluidElement = (fluidGroup != null && fluid != null) ?
                     fluidGroup.getFluidElementByFluid(fluid) : null;
-
             if (fluidElement != null) fluidOutputs.put(facing, fluidElement);
         }
     }
