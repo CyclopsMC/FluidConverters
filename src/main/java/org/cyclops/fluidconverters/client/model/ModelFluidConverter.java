@@ -24,8 +24,12 @@ import java.util.Map;
  */
 public class ModelFluidConverter extends DynamicModel {
 
-    public static final ModelResourceLocation modelResourceLocation =
+    // Resource location for the block model
+    public static final ModelResourceLocation blockModelResourceLocation =
             new ModelResourceLocation(Reference.prefixModId(BlockFluidConverter.getInstance()));
+    // Resource location for the item model
+    public static final ModelResourceLocation itemModelResourceLocation =
+            new ModelResourceLocation(Reference.prefixModId(BlockFluidConverter.getInstance()), "inventory");
 
     public TextureAtlasSprite texture;
 
@@ -82,4 +86,5 @@ public class ModelFluidConverter extends DynamicModel {
     public TextureAtlasSprite getParticleTexture() {
         return RenderHelpers.getBlockIcon(Blocks.iron_block);
     }
+
 }

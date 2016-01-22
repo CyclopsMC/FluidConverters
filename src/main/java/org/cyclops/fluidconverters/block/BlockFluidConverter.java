@@ -207,9 +207,15 @@ public class BlockFluidConverter extends ConfigurableBlockContainer {
     @SubscribeEvent
     public void onModelBakeEvent(ModelBakeEvent event) {
         ModelResourceLocation modelResourceLocation;
-        IBakedModel baseModel = (IBakedModel) event.modelRegistry.getObject(ModelFluidConverter.modelResourceLocation);
+        IBakedModel baseModel = (IBakedModel) event.modelRegistry.getObject(ModelFluidConverter.blockModelResourceLocation);
         ModelFluidConverterFactory.setBaseModel(baseModel);
-        event.modelRegistry.putObject(ModelFluidConverter.modelResourceLocation, this.createDynamicModel());
+
+        IBakedModel model = this.createDynamicModel();
+
+        // Register the block model
+        event.modelRegistry.putObject(ModelFluidConverter.blockModelResourceLocation, model);
+        // Register the same model as the item model
+        event.modelRegistry.putObject(ModelFluidConverter.itemModelResourceLocation, model);
     }
 
     /**
