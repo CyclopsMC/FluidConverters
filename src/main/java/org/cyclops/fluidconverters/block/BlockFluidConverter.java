@@ -219,6 +219,17 @@ public class BlockFluidConverter extends ConfigurableBlockContainer {
     }
 
     /**
+     * Parses a fluid group from nbt
+     * @param nbt NBT tag which contains a possible fluid group
+     * @return A parsed fluid group, or null in case none was found
+     */
+    public static FluidGroup getFluidGroupFromNBT(NBTTagCompound nbt) {
+        String fluidGroupId = nbt.getString(NBTKEY_GROUPID);
+        return fluidGroupId != null ?
+                FluidGroupRegistry.getFluidGroupById(fluidGroupId) : null;
+    }
+
+    /**
      * Parses fluid outputs from nbt
      * @param nbt NBT tag from which to extract fluid outputs
      * @return Fluid outputs.

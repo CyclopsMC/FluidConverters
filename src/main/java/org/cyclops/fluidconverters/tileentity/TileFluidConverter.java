@@ -6,13 +6,15 @@ import lombok.experimental.Delegate;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MathHelper;
-import net.minecraftforge.fluids.*;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidHandler;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.helper.TileHelpers;
 import org.cyclops.cyclopscore.tileentity.CyclopsTileEntity;
 import org.cyclops.fluidconverters.block.BlockFluidConverter;
 import org.cyclops.fluidconverters.fluidgroup.FluidGroup;
-import org.cyclops.fluidconverters.fluidgroup.FluidGroupRegistry;
 
 import java.util.Map;
 import java.util.Queue;
@@ -41,8 +43,7 @@ public class TileFluidConverter extends CyclopsTileEntity implements IFluidHandl
      */
     public void readStateFromNBT(NBTTagCompound nbt) {
         // Fluid group
-        String fluidGroupId = nbt.getString(BlockFluidConverter.NBTKEY_GROUPID);
-        this.fluidGroup = fluidGroupId != null ? FluidGroupRegistry.getFluidGroupById(fluidGroupId) : null;
+        this.fluidGroup = BlockFluidConverter.getFluidGroupFromNBT(nbt);
 
         // Fluid outputs
         Map<EnumFacing, Fluid> fluidMap = BlockFluidConverter.getFluidOutputsFromNBT(nbt);
