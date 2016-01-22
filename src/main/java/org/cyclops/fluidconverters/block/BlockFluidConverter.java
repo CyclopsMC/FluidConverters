@@ -239,7 +239,8 @@ public class BlockFluidConverter extends ConfigurableBlockContainer {
         for (EnumFacing facing : EnumFacing.values()) {
             String fluidName = nbt.getString(NBT_KEY_FLUIDSIDE(facing));
             Fluid fluid = fluidName != null ? FluidRegistry.getFluid(fluidName) : null;
-            fluidOutputs.put(facing, fluid);
+            if (fluid != null)
+                fluidOutputs.put(facing, fluid);
         }
         return fluidOutputs;
     }
