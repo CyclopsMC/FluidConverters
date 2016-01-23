@@ -28,8 +28,8 @@ public class ItemBlockFluidConverter extends ItemBlockNBT {
         super.addInformation(itemStack, entityPlayer, list, par4);
 
         NBTTagCompound nbt = itemStack.getTagCompound();
-        if (nbt != null) {
-            FluidGroup fluidGroup = BlockFluidConverter.getFluidGroupFromNBT(nbt);
+        FluidGroup fluidGroup = nbt != null ? BlockFluidConverter.getFluidGroupFromNBT(nbt) : null;
+        if (nbt != null && fluidGroup != null) {
             list.add(EnumChatFormatting.GOLD +
                 L10NHelpers.localize("tile.blocks.fluidConverter.converter") + ": " +
                 fluidGroup.getGroupName()
