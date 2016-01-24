@@ -16,6 +16,8 @@ import net.minecraftforge.fluids.Fluid;
 import org.cyclops.cyclopscore.client.model.DynamicModel;
 import org.cyclops.cyclopscore.persist.nbt.NBTClassType;
 import org.cyclops.fluidconverters.block.BlockFluidConverter;
+import org.cyclops.fluidconverters.fluidgroup.FluidGroup;
+import org.cyclops.fluidconverters.fluidgroup.FluidGroupReference;
 import org.cyclops.fluidconverters.tileentity.TileFluidConverter;
 
 import javax.vecmath.Vector3f;
@@ -41,10 +43,11 @@ public class ModelFluidConverterFactory extends DynamicModel {
     public IBakedModel handleBlockState(IBlockState state) {
         if (state instanceof IExtendedBlockState) {
             IExtendedBlockState eState = (IExtendedBlockState) state;
+            FluidGroup fluidGroup = eState.getValue(BlockFluidConverter.FLUID_GROUP);
             Map<EnumFacing, Fluid> fluidOutputs = eState.getValue(BlockFluidConverter.FLUID_OUTPUTS);
 
             if (fluidOutputs != null) {
-                return new ModelFluidConverter(this, baseModel, fluidOutputs);
+                return new ModelFluidConverter(this, baseModel, fluidGroup, fluidOutputs);
             }
         }
 
@@ -57,13 +60,19 @@ public class ModelFluidConverterFactory extends DynamicModel {
         if (nbt != null) {
 
             // TODO: should not read raw NBT, but for now no better system is in place to handle this
+            // Read fluid group from nbt
+            FluidGroupReference fluidGroupRef = new FluidGroupReference();
+            NBTClassType<FluidGroupReference> fluidGroupSerializer = NBTClassType.getType(FluidGroupReference.class, fluidGroupRef);
+            fluidGroupRef = fluidGroupSerializer.readPersistedField(TileFluidConverter.NBT_FLUID_GROUP_REF, nbt);
+            FluidGroup fluidGroup = fluidGroupRef.getFluidGroup();
+
             // Read the fluid outputs from nbt
             Map<EnumFacing, Fluid> fluidOutputs = new TreeMap<EnumFacing, Fluid>();
             NBTClassType<Map> serializer = NBTClassType.getType(Map.class, fluidOutputs);
             fluidOutputs = serializer.readPersistedField(TileFluidConverter.NBT_FLUID_OUTPUTS, nbt);
 
-            if (fluidOutputs != null) {
-                ModelFluidConverter model = new ModelFluidConverter(this, baseModel, fluidOutputs);
+            if (fluidGroup != null && fluidOutputs != null) {
+                ModelFluidConverter model = new ModelFluidConverter(this, baseModel, fluidGroup, fluidOutputs);
                 return createPerspectiveAwareModel(model);
             }
         }

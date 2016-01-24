@@ -14,6 +14,8 @@ import org.cyclops.cyclopscore.client.model.DynamicModel;
 import org.cyclops.cyclopscore.helper.RenderHelpers;
 import org.cyclops.fluidconverters.Reference;
 import org.cyclops.fluidconverters.block.BlockFluidConverter;
+import org.cyclops.fluidconverters.fluidgroup.FluidGroup;
+import org.lwjgl.util.Color;
 
 import java.util.List;
 import java.util.Map;
@@ -35,12 +37,14 @@ public class ModelFluidConverter extends DynamicModel {
 
     private ModelFluidConverterFactory factory;
     private IBakedModel baseModel;
+    private FluidGroup fluidGroup;
     private Map<EnumFacing, Fluid> fluidOutputs;
 
     // Creates a model factory
-    public ModelFluidConverter(ModelFluidConverterFactory factory, IBakedModel baseModel, Map<EnumFacing, Fluid> fluidOutputs) {
+    public ModelFluidConverter(ModelFluidConverterFactory factory, IBakedModel baseModel, FluidGroup fluidGroup, Map<EnumFacing, Fluid> fluidOutputs) {
         this.factory = factory;
         this.baseModel = baseModel;
+        this.fluidGroup = fluidGroup;
         this.fluidOutputs = fluidOutputs;
     }
 
@@ -50,6 +54,8 @@ public class ModelFluidConverter extends DynamicModel {
 
         TextureAtlasSprite fluidOpen = BlockFluidConverter.getInstance().fluidOpenTexture;
         TextureAtlasSprite fluidCenter = BlockFluidConverter.getInstance().fluidCenterTexture;
+
+        Color averageColor = fluidGroup.getAverageColor();
 
         if (fluidOpen == null || fluidCenter == null)
             return quads;
@@ -63,7 +69,7 @@ public class ModelFluidConverter extends DynamicModel {
             if (centerTexture == null) centerTexture = fluidCenter;
 
             // Render the default background
-            this.addBakedQuad(quads, 0, 1, 1, 0, 0, fluidOpen, direction);
+            this.addBakedQuad(quads, 0, 1, 1, 0, 0, fluidOpen, averageColor, direction);
             // Render the fluid/center icon
             this.addBakedQuad(quads, 0.25f, 0.75f, 0.75f, 0.25f, -0.0001f, centerTexture, direction.getOpposite());
 

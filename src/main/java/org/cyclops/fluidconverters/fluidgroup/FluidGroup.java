@@ -4,6 +4,8 @@ import lombok.Data;
 import lombok.NonNull;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
+import org.cyclops.fluidconverters.FluidColorAnalyzer;
+import org.lwjgl.util.Color;
 
 import java.util.List;
 
@@ -21,6 +23,13 @@ public class FluidGroup {
     private String groupName;
     private float lossRatio;
     private boolean hasRecipe;
+
+    /**
+     * @return Returns the average color of the fluids in this fluid group
+     */
+    public Color getAverageColor() {
+        return FluidColorAnalyzer.getAverageColor(this);
+    }
 
     /**
      * Finds the fluid element with the given fluid.
