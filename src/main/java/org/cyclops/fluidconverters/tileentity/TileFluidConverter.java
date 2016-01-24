@@ -3,7 +3,6 @@ package org.cyclops.fluidconverters.tileentity;
 import com.google.common.collect.Lists;
 import lombok.Getter;
 import lombok.experimental.Delegate;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.fluids.Fluid;
@@ -12,9 +11,10 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.helper.TileHelpers;
+import org.cyclops.cyclopscore.persist.nbt.NBTPersist;
 import org.cyclops.cyclopscore.tileentity.CyclopsTileEntity;
-import org.cyclops.fluidconverters.block.BlockFluidConverter;
 import org.cyclops.fluidconverters.fluidgroup.FluidGroup;
+import org.cyclops.fluidconverters.fluidgroup.FluidGroupReference;
 
 import java.util.Map;
 import java.util.Queue;
@@ -25,36 +25,22 @@ import java.util.TreeMap;
  */
 public class TileFluidConverter extends CyclopsTileEntity implements IFluidHandler, CyclopsTileEntity.ITickingTile {
 
+    @NBTPersist
     @Getter
-    private FluidGroup fluidGroup;
+    private FluidGroupReference fluidGroupRef;
+    // NOTE: Value should be same as the name of the field above
+    public static final String NBT_FLUID_GROUP_REF = "fluidGroupRef";
+
+    @NBTPersist
     @Getter
-    private Map<EnumFacing, FluidGroup.FluidElement> fluidOutputs = new TreeMap<EnumFacing, FluidGroup.FluidElement>();
+    private Map<EnumFacing, Fluid> fluidOutputs = new TreeMap<EnumFacing, Fluid>();
+    // NOTE: Value should be same as the name of the field above
+    public static final String NBT_FLUID_OUTPUTS = "fluidOutputs";
 
     @Delegate
     protected final ITickingTile tickingTileComponent = new TickingTileComponent(this);
 
     public TileFluidConverter() {
-    }
-
-    /**
-     * Reads variable properties like fluidGroup from the nbt and
-     * sets this tile entity to those values.
-     * @param nbt nbt tag containing the state of the tile entity
-     */
-    public void readStateFromNBT(NBTTagCompound nbt) {
-        // Fluid group
-        this.fluidGroup = BlockFluidConverter.getFluidGroupFromNBT(nbt);
-
-        // Fluid outputs
-        Map<EnumFacing, Fluid> fluidMap = BlockFluidConverter.getFluidOutputsFromNBT(nbt);
-        for (Map.Entry<EnumFacing, Fluid> entry : fluidMap.entrySet()) {
-            EnumFacing facing = entry.getKey();
-            Fluid fluid = entry.getValue();
-
-            FluidGroup.FluidElement fluidElement = (fluidGroup != null && fluid != null) ?
-                    fluidGroup.getFluidElementByFluid(fluid) : null;
-            if (fluidElement != null) fluidOutputs.put(facing, fluidElement);
-        }
     }
 
     /**
@@ -71,11 +57,11 @@ public class TileFluidConverter extends CyclopsTileEntity implements IFluidHandl
         }
 
         boolean changed = false;
-        FluidGroup.FluidElement fluidElement = fluidGroup.getFluidElementByFluid(fluid);
+        FluidGroup.FluidElement fluidElement = fluidGroupRef.getFluidGroup().getFluidElementByFluid(fluid);
         if (fluidElement != null) {
-            changed = !fluidElement.equals(fluidOutputs.get(facing));
+            changed = !fluid.equals(fluidOutputs.get(facing));
             if (changed) {
-                fluidOutputs.put(facing, fluidElement);
+                fluidOutputs.put(facing, fluid);
             }
         }
 
@@ -89,9 +75,10 @@ public class TileFluidConverter extends CyclopsTileEntity implements IFluidHandl
      */
     private Queue<Pair<IFluidHandler, EnumFacing>> getDestinations() {
         Queue<Pair<IFluidHandler, EnumFacing>> destinations = Lists.newLinkedList();
-        for (Map.Entry<EnumFacing, FluidGroup.FluidElement> entry : fluidOutputs.entrySet()) {
+        for (Map.Entry<EnumFacing, Fluid> entry : fluidOutputs.entrySet()) {
             EnumFacing facing = entry.getKey();
-            FluidGroup.FluidElement fluidElement = entry.getValue();
+            Fluid fluid = entry.getValue();
+            FluidGroup.FluidElement fluidElement = fluidGroupRef.getFluidGroup().getFluidElementByFluid(fluid);
 
             // Fetch the handler on this side
             IFluidHandler handler = TileHelpers.getSafeTile(worldObj, getPos().offset(facing), IFluidHandler.class);
@@ -110,13 +97,14 @@ public class TileFluidConverter extends CyclopsTileEntity implements IFluidHandl
             EnumFacing sourceSide = pair.getValue();
             EnumFacing destSide = sourceSide.getOpposite();
 
-            FluidGroup.FluidElement fluidElement = fluidOutputs.get(sourceSide);
+            Fluid fluid = fluidOutputs.get(sourceSide);
+            FluidGroup.FluidElement fluidElement = fluidGroupRef.getFluidGroup().getFluidElementByFluid(fluid);
             float destWeight = fluidElement.getValue();
 
             // Convert the units this output receives to "liquid units"
             // and floor because we can't use more units than are given
             FluidStack fluidStack = new FluidStack(
-                    fluidElement.getFluid(),
+                    fluid,
                     MathHelper.floor_float(unitsPerOutput * destWeight)
             );
 
@@ -142,7 +130,7 @@ public class TileFluidConverter extends CyclopsTileEntity implements IFluidHandl
         IFluidHandler source = TileHelpers.getSafeTile(worldObj, getPos().offset(from), IFluidHandler.class);
 
         // Fetch the weight of the fluid in the source
-        FluidGroup.FluidElement sourceFluidElement = fluidGroup.getFluidElementByFluid(resource.getFluid());
+        FluidGroup.FluidElement sourceFluidElement = fluidGroupRef.getFluidGroup().getFluidElementByFluid(resource.getFluid());
         if (sourceFluidElement == null) return 0;
         float sourceWeight = sourceFluidElement.getValue();
 
@@ -179,7 +167,7 @@ public class TileFluidConverter extends CyclopsTileEntity implements IFluidHandl
 
     @Override
     public boolean canFill(EnumFacing from, Fluid fluid) {
-        return fluidGroup.getFluidElementByFluid(fluid) != null;
+        return fluidGroupRef.getFluidGroup().getFluidElementByFluid(fluid) != null;
     }
 
     @Override
@@ -190,25 +178,5 @@ public class TileFluidConverter extends CyclopsTileEntity implements IFluidHandl
     @Override
     public FluidTankInfo[] getTankInfo(EnumFacing from) {
         return new FluidTankInfo[0];
-    }
-
-    @Override
-    public void readFromNBT(NBTTagCompound tag) {
-        super.readFromNBT(tag);
-        readStateFromNBT(tag);
-    }
-
-    @Override
-    public void writeToNBT(NBTTagCompound tag) {
-        super.writeToNBT(tag);
-
-        // fluid group
-        if (fluidGroup != null) {
-            tag.setString(BlockFluidConverter.NBTKEY_GROUPID, fluidGroup.getGroupId());
-        }
-
-        // fluid outputs
-        for (Map.Entry<EnumFacing, FluidGroup.FluidElement> entry : fluidOutputs.entrySet())
-            tag.setString(BlockFluidConverter.NBT_KEY_FLUIDSIDE(entry.getKey()), entry.getValue().getFluid().getName());
     }
 }

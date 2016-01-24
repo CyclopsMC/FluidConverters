@@ -8,8 +8,10 @@ import net.minecraft.util.EnumChatFormatting;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.item.ItemBlockNBT;
-import org.cyclops.fluidconverters.block.BlockFluidConverter;
+import org.cyclops.cyclopscore.persist.nbt.NBTClassType;
 import org.cyclops.fluidconverters.fluidgroup.FluidGroup;
+import org.cyclops.fluidconverters.fluidgroup.FluidGroupReference;
+import org.cyclops.fluidconverters.tileentity.TileFluidConverter;
 
 import java.util.List;
 
@@ -28,8 +30,15 @@ public class ItemBlockFluidConverter extends ItemBlockNBT {
         super.addInformation(itemStack, entityPlayer, list, par4);
 
         NBTTagCompound nbt = itemStack.getTagCompound();
-        FluidGroup fluidGroup = nbt != null ? BlockFluidConverter.getFluidGroupFromNBT(nbt) : null;
-        if (nbt != null && fluidGroup != null) {
+        if (nbt == null) return;
+
+        // TODO: we shouldn't be parsing NBT manually here, clean this up some day
+        FluidGroupReference fluidGroupRef = new FluidGroupReference();
+        NBTClassType<FluidGroupReference> serializer = NBTClassType.getType(FluidGroupReference.class, fluidGroupRef);
+        fluidGroupRef = serializer.readPersistedField(TileFluidConverter.NBT_FLUID_GROUP_REF, nbt);
+        FluidGroup fluidGroup = fluidGroupRef.getFluidGroup();
+
+        if (fluidGroup != null) {
             list.add(EnumChatFormatting.GOLD +
                 L10NHelpers.localize("tile.blocks.fluidConverter.converter") + ": " +
                 fluidGroup.getGroupName()

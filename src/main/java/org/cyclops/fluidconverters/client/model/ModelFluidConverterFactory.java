@@ -14,10 +14,12 @@ import net.minecraftforge.client.model.TRSRTransformation;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fluids.Fluid;
 import org.cyclops.cyclopscore.client.model.DynamicModel;
+import org.cyclops.cyclopscore.persist.nbt.NBTClassType;
 import org.cyclops.fluidconverters.block.BlockFluidConverter;
 
 import javax.vecmath.Vector3f;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * A factory that creates {@link org.cyclops.fluidconverters.client.model.ModelFluidConverter}S.
@@ -52,7 +54,13 @@ public class ModelFluidConverterFactory extends DynamicModel {
     public IBakedModel handleItemState(ItemStack stack) {
         NBTTagCompound nbt = stack.getTagCompound();
         if (nbt != null) {
-            Map<EnumFacing, Fluid> fluidOutputs = BlockFluidConverter.getFluidOutputsFromNBT(nbt);
+
+            // TODO: should not read raw NBT, but for now no better system is in place to handle this
+            // Read the fluid outputs from nbt
+            Map<EnumFacing, Fluid> fluidOutputs = new TreeMap<EnumFacing, Fluid>();
+            NBTClassType<Map> serializer = NBTClassType.getType(Map.class, fluidOutputs);
+            fluidOutputs = serializer.readPersistedField("fluidOutputs", nbt);
+
             if (fluidOutputs != null) {
                 ModelFluidConverter model = new ModelFluidConverter(this, baseModel, fluidOutputs);
                 return createPerspectiveAwareModel(model);
