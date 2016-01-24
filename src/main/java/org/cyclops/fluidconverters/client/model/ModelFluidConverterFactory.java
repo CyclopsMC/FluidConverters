@@ -16,6 +16,7 @@ import net.minecraftforge.fluids.Fluid;
 import org.cyclops.cyclopscore.client.model.DynamicModel;
 import org.cyclops.cyclopscore.persist.nbt.NBTClassType;
 import org.cyclops.fluidconverters.block.BlockFluidConverter;
+import org.cyclops.fluidconverters.tileentity.TileFluidConverter;
 
 import javax.vecmath.Vector3f;
 import java.util.Map;
@@ -59,7 +60,7 @@ public class ModelFluidConverterFactory extends DynamicModel {
             // Read the fluid outputs from nbt
             Map<EnumFacing, Fluid> fluidOutputs = new TreeMap<EnumFacing, Fluid>();
             NBTClassType<Map> serializer = NBTClassType.getType(Map.class, fluidOutputs);
-            fluidOutputs = serializer.readPersistedField("fluidOutputs", nbt);
+            fluidOutputs = serializer.readPersistedField(TileFluidConverter.NBT_FLUID_OUTPUTS, nbt);
 
             if (fluidOutputs != null) {
                 ModelFluidConverter model = new ModelFluidConverter(this, baseModel, fluidOutputs);
