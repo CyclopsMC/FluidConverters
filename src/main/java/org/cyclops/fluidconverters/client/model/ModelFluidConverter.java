@@ -69,7 +69,7 @@ public class ModelFluidConverter extends DynamicModel {
             if (centerTexture == null) centerTexture = fluidCenter;
 
             // Render the default background
-            this.addBakedQuad(quads, 0, 1, 1, 0, 0, fluidOpen, averageColor, direction);
+            this.addColoredBakedQuad(quads, 0, 1, 1, 0, 0, fluidOpen, averageColor, direction);
             // Render the fluid/center icon
             this.addBakedQuad(quads, 0.25f, 0.75f, 0.75f, 0.25f, -0.0001f, centerTexture, direction.getOpposite());
 
