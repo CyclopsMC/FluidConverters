@@ -57,6 +57,24 @@ public class FluidGroup {
 
             this.value = value;
         }
+
+        /**
+         * Converts a given amount of fluid from this fluid's units to normalized units.
+         * @param amount Fluid amount in fluid units.
+         * @return Fluid amount in normalized units.
+         */
+        public float normalize(float amount) {
+            return amount * this.value;
+        }
+
+        /**
+         * Converts a given amount of fluid from normalized units to this fluid's units.
+         * @param amount Fluid amount in normalized units.
+         * @return Fluid amount in fluid units.
+         */
+        public float denormalize(float amount) {
+            return amount / this.value;
+        }
     }
 
     public static class NoSuchFluidException extends Exception {
