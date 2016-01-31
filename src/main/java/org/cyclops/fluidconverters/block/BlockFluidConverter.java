@@ -83,9 +83,10 @@ public class BlockFluidConverter extends ConfigurableBlockContainer {
      */
     public BlockFluidConverter(ExtendedConfig eConfig) {
         super(eConfig, Material.iron, TileFluidConverter.class);
-        // Listen to ModelBakeEvents
-        MinecraftForge.EVENT_BUS.register(this);
+
         if(MinecraftHelpers.isClientSide()) {
+            // Listen to ModelBakeEvents
+            MinecraftForge.EVENT_BUS.register(this);
             eConfig.getMod().getIconProvider().registerIconHolderObject(this);
         }
     }
@@ -147,6 +148,7 @@ public class BlockFluidConverter extends ConfigurableBlockContainer {
         return true;
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public IBakedModel createDynamicModel() {
         return new ModelFluidConverterFactory();
