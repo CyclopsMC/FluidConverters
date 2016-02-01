@@ -92,6 +92,7 @@ public class FluidGroupsLoader {
 
         copyTemplate("example.json.template", directory);
         copyTemplate("blood.json", directory);
+        copyTemplate("custom_recipes.xml", directory);
     }
 
     /**
@@ -126,12 +127,14 @@ public class FluidGroupsLoader {
         String groupName = getOptionalPrimitiveProperty(fluidGroup, "groupName", groupId, String.class);
         float lossRatio = getOptionalPrimitiveProperty(fluidGroup, "lossRatio", 0f, Float.class);
         boolean hasRecipe = getOptionalPrimitiveProperty(fluidGroup, "hasRecipe", true, Boolean.class);
+        boolean hasDefaultRecipe = getOptionalPrimitiveProperty(fluidGroup, "hasDefaultRecipe", true, Boolean.class);
 
         // Create the fluid group object
         FluidGroup result = new FluidGroup(groupId, fluidElementList);
         result.setGroupName(groupName);
         result.setLossRatio(lossRatio);
         result.setHasRecipe(hasRecipe);
+        result.setHasDefaultRecipe(hasDefaultRecipe);
         return result;
     }
 

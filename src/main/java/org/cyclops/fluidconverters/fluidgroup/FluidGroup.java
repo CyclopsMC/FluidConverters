@@ -23,6 +23,7 @@ public class FluidGroup {
     private String groupName;
     private float lossRatio;
     private boolean hasRecipe;
+    private boolean hasDefaultRecipe;
 
     /**
      * @return Returns the average color of the fluids in this fluid group

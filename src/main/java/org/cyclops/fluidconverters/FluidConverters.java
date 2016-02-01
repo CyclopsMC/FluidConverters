@@ -61,7 +61,7 @@ public class FluidConverters extends ModBaseVersionable {
 
     @Override
     protected RecipeHandler constructRecipeHandler() {
-        return new RecipeHandler(this);
+        return new FluidConvertersRecipeHandler(this);
     }
 
     @Override

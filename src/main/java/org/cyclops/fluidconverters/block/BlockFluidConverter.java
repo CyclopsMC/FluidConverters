@@ -109,9 +109,7 @@ public class BlockFluidConverter extends ConfigurableBlockContainer {
         Iterator<FluidGroup> it = FluidGroupRegistry.iterator();
         while (it.hasNext()) {
             FluidGroup fluidGroup = it.next();
-            ItemStack itemStack = new ItemStack(this);
-            addFluidGroupInfo(itemStack, fluidGroup);
-            list.add(itemStack);
+            list.add(createItemStack(fluidGroup));
         }
     }
 
@@ -196,5 +194,17 @@ public class BlockFluidConverter extends ConfigurableBlockContainer {
         event.modelRegistry.putObject(ModelFluidConverter.blockModelResourceLocation, model);
         // Register the same model as the item model
         event.modelRegistry.putObject(ModelFluidConverter.itemModelResourceLocation, model);
+    }
+
+    /**
+     * Creates an item stack with a fluid converter for the given fluid group.
+     * @param fluidGroup A fluid group for the fluid converter.
+     * @return item stack that contains a single fluid converter for the given fluid group.
+     */
+    public static ItemStack createItemStack(FluidGroup fluidGroup) {
+        BlockFluidConverter self = getInstance();
+        ItemStack itemStack = new ItemStack(self);
+        self.addFluidGroupInfo(itemStack, fluidGroup);
+        return itemStack;
     }
 }
