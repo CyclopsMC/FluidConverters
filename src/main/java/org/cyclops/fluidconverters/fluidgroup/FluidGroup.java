@@ -34,7 +34,7 @@ public class FluidGroup {
     /**
      * Finds the fluid element with the given fluid.
      * @param fluid Fluid that needs to be matched.
-     * @returns Returns the fluid element that matches the given fluid, or null in case no fluid element matched.
+     * @return Returns the fluid element that matches the given fluid, or null in case no fluid element matched.
      */
     public FluidElement getFluidElementByFluid(Fluid fluid) {
         for (FluidElement fluidElement : fluidElements) {
