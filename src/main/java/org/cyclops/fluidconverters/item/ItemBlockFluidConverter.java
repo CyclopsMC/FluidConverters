@@ -57,7 +57,7 @@ public class ItemBlockFluidConverter extends ItemBlockNBT {
     public static void addInformation(List info, FluidGroup fluidGroup, float buffer, boolean isShifted) {
         if (fluidGroup != null) {
             info.add(EnumChatFormatting.GOLD +
-                            L10NHelpers.localize("tile.blocks.fluidConverters.fluidConverter.converter") + ": " +
+                            L10NHelpers.localize("tile.blocks.fluidconverters.fluidconverter.converter") + ": " +
                             fluidGroup.getGroupName()
             );
 

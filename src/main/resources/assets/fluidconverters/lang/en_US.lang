@@ -1,7 +1,7 @@
 # General
 info.invalid=Invalid converter
-itemGroup.fluidConverters=Fluid Converters
+itemGroup.fluidconverters=Fluid Converters
 
 # Blocks
-tile.blocks.fluidConverters.fluidConverter.name=Fluid Converter
-tile.blocks.fluidConverters.fluidConverter.converter=Converter
+tile.blocks.fluidconverters.fluidconverter.name=Fluid Converter
+tile.blocks.fluidconverters.fluidconverter.converter=Converter

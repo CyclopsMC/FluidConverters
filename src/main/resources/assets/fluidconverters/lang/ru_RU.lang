@@ -1,7 +1,7 @@
 # General
 info.invalid=Неверный преобразователь
-itemGroup.fluidConverters=Fluid Converters
+itemGroup.fluidconverters=Fluid Converters
 
 # Blocks
-tile.blocks.fluidConverters.fluidConverter.name=Преобразователь жидкостей
-tile.blocks.fluidConverters.fluidConverter.converter=Преобразователь
+tile.blocks.fluidconverters.fluidconverter.name=Преобразователь жидкостей
+tile.blocks.fluidconverters.fluidconverter.converter=Преобразователь
