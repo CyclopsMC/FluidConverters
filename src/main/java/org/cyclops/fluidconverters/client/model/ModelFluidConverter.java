@@ -33,12 +33,16 @@ public class ModelFluidConverter extends DynamicModel {
     public static final ModelResourceLocation itemModelResourceLocation =
             new ModelResourceLocation(Reference.prefixModId(BlockFluidConverter.getInstance()), "inventory");
 
+    // The default color, in case the average color is missing
+    private static final Color DEFAULT_COLOR = new Color(255, 255, 255, 255);
+
     public TextureAtlasSprite texture;
 
     private ModelFluidConverterFactory factory;
     private IBakedModel baseModel;
     private FluidGroup fluidGroup;
     private Map<EnumFacing, Fluid> fluidOutputs;
+    private Color averageColor;
 
     // Creates a model factory
     public ModelFluidConverter(ModelFluidConverterFactory factory, IBakedModel baseModel, FluidGroup fluidGroup, Map<EnumFacing, Fluid> fluidOutputs) {
@@ -46,6 +50,8 @@ public class ModelFluidConverter extends DynamicModel {
         this.baseModel = baseModel;
         this.fluidGroup = fluidGroup;
         this.fluidOutputs = fluidOutputs;
+
+        this.averageColor = fluidGroup == null ? DEFAULT_COLOR : fluidGroup.getAverageColor();
     }
 
     @Override
@@ -55,14 +61,12 @@ public class ModelFluidConverter extends DynamicModel {
         TextureAtlasSprite fluidOpen = BlockFluidConverter.getInstance().fluidOpenTexture;
         TextureAtlasSprite fluidCenter = BlockFluidConverter.getInstance().fluidCenterTexture;
 
-        Color averageColor = fluidGroup.getAverageColor();
-
         if (fluidOpen == null || fluidCenter == null)
             return quads;
 
         for (EnumFacing direction : EnumFacing.values()) {
             // Does this side have a fluid output?
-            Fluid fluid = fluidOutputs.get(direction);
+            Fluid fluid = fluidOutputs != null ? fluidOutputs.get(direction) : null;
             TextureAtlasSprite centerTexture = fluid != null ? RenderHelpers.getFluidIcon(fluid, EnumFacing.UP) : null;
 
             // In case no fluid icon was found render the default center

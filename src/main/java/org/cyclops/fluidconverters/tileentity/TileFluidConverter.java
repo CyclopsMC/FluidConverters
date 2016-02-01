@@ -52,6 +52,14 @@ public class TileFluidConverter extends CyclopsTileEntity implements IFluidHandl
     public TileFluidConverter() {
     }
 
+    public boolean isValidConverter() {
+        return getFluidGroup() != null && getFluidOutputs() != null;
+    }
+
+    public FluidGroup getFluidGroup() {
+        return fluidGroupRef != null ? fluidGroupRef.getFluidGroup() : null;
+    }
+
     public void setBuffer(float newBuffer) {
         if (this.buffer != newBuffer) {
             this.buffer = newBuffer;
@@ -69,13 +77,15 @@ public class TileFluidConverter extends CyclopsTileEntity implements IFluidHandl
      * @return Returns true if the fluid output for the given side changed;
      */
     public boolean setFluidOutput(EnumFacing facing, Fluid fluid) {
+        if (!isValidConverter()) return false;
+
         if (fluid == null) {
             fluidOutputs.remove(facing);
             return true;
         }
 
         boolean changed = false;
-        FluidGroup.FluidElement fluidElement = fluidGroupRef.getFluidGroup().getFluidElementByFluid(fluid);
+        FluidGroup.FluidElement fluidElement = getFluidGroup().getFluidElementByFluid(fluid);
         if (fluidElement != null) {
             changed = !fluid.equals(fluidOutputs.get(facing));
             if (changed) {
@@ -115,6 +125,7 @@ public class TileFluidConverter extends CyclopsTileEntity implements IFluidHandl
 
     @Override
     protected void updateTileEntity() {
+        if (!isValidConverter()) return;
         if (buffer < MBRATE) return;
 
         // Loop over all possible output directions
@@ -128,7 +139,7 @@ public class TileFluidConverter extends CyclopsTileEntity implements IFluidHandl
 
             // Try to fill fluid to this handler and update the buffer
             if (handler != null && handler.canFill(fillSide, fluid)) {
-                tryToFillFluid(handler, fillSide, fluidGroupRef.getFluidGroup().getFluidElementByFluid(fluid), MBRATE, true);
+                tryToFillFluid(handler, fillSide, getFluidGroup().getFluidElementByFluid(fluid), MBRATE, true);
                 if (buffer < MBRATE) return;    // quit if there is nothing left to drain here
             }
         }
@@ -150,8 +161,10 @@ public class TileFluidConverter extends CyclopsTileEntity implements IFluidHandl
 
     @Override
     public int fill(EnumFacing from, FluidStack resource, boolean doFill) {
+        if (!isValidConverter()) return 0;
+
         // Fetch the fluid element from the source
-        FluidGroup.FluidElement sourceFluidElement = fluidGroupRef.getFluidGroup().getFluidElementByFluid(resource.getFluid());
+        FluidGroup.FluidElement sourceFluidElement = getFluidGroup().getFluidElementByFluid(resource.getFluid());
         if (sourceFluidElement == null) return 0;
 
         // Save all liquid in the buffer
@@ -161,12 +174,14 @@ public class TileFluidConverter extends CyclopsTileEntity implements IFluidHandl
     }
 
     private FluidStack doDrain(EnumFacing from, Fluid fluid, int amount, boolean doDrain) {
+        if (!isValidConverter()) return null;
+
         // Is there actually anything to fill in that direction?
         IFluidHandler handler = TileHelpers.getSafeTile(worldObj, getPos().offset(from), IFluidHandler.class);
         if (handler == null) return null;
 
         // Try to fill it up
-        FluidGroup.FluidElement fluidElement = fluidGroupRef.getFluidGroup().getFluidElementByFluid(fluid);
+        FluidGroup.FluidElement fluidElement = getFluidGroup().getFluidElementByFluid(fluid);
         int liquidDrained = tryToFillFluid(handler, from.getOpposite(), fluidElement, amount, doDrain);
 
         return new FluidStack(fluid, liquidDrained);
@@ -187,7 +202,7 @@ public class TileFluidConverter extends CyclopsTileEntity implements IFluidHandl
 
     @Override
     public boolean canFill(EnumFacing from, Fluid fluid) {
-        return fluidGroupRef.getFluidGroup().getFluidElementByFluid(fluid) != null;
+        return isValidConverter() && getFluidGroup().getFluidElementByFluid(fluid) != null;
     }
 
     @Override

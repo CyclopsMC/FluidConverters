@@ -132,8 +132,12 @@ public class BlockFluidConverter extends ConfigurableBlockContainer {
         // Force renderer, because one of the side will display a liquid icon
         world.markBlockRangeForRenderUpdate(pos, pos);
 
+        // Fetch the fluid group
+        FluidGroup fluidGroup = tile.getFluidGroup();
+        if (fluidGroup == null) return true;
+
         // DEBUG
-        player.addChatComponentMessage(new ChatComponentText("fluid group: " + tile.getFluidGroupRef().getFluidGroup().getGroupName()));
+        player.addChatComponentMessage(new ChatComponentText("fluid group: " + fluidGroup.getGroupName()));
         for (Map.Entry<EnumFacing, Fluid> entry : tile.getFluidOutputs().entrySet()) {
             player.addChatComponentMessage(new ChatComponentText(
                     entry.getKey().toString() + ": " + entry.getValue().getName()
@@ -173,9 +177,10 @@ public class BlockFluidConverter extends ConfigurableBlockContainer {
 
         FluidGroup fluidGroup = tile.getFluidGroupRef().getFluidGroup();
         Map<EnumFacing, Fluid> fluidOutputs = tile.getFluidOutputs();
-        return ret
-                .withProperty(FLUID_GROUP, fluidGroup)
-                .withProperty(FLUID_OUTPUTS, fluidOutputs);
+
+        if (fluidGroup != null) ret = ret.withProperty(FLUID_GROUP, fluidGroup);
+        if (fluidOutputs != null) ret = ret.withProperty(FLUID_OUTPUTS, fluidOutputs);
+        return ret;
     }
 
     @SideOnly(Side.CLIENT)
