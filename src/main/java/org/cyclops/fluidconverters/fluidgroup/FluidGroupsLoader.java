@@ -10,7 +10,6 @@ import org.cyclops.fluidconverters.Reference;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -75,16 +74,15 @@ public class FluidGroupsLoader {
      */
     private void initConfigDirectory(File directory) throws IOException {
         // Check if the example resource exists
-        URL exampleUrl = getClass().getResource(Reference.ASSETS_PATH + "example.json");
-        File exampleFile = new File(exampleUrl.getPath());
-        if (!exampleFile.exists())
+        InputStream stream = getClass().getResourceAsStream(Reference.ASSETS_PATH + "example.json");
+        if (stream == null)
             throw new FileNotFoundException("Unable to initialize the config directory: the example file does not exist.");
 
         // mkdir -p configDir
         directory.mkdirs();
 
         // copy the example file to the config directory
-        FileUtils.copyFileToDirectory(exampleFile, directory);
+        FileUtils.copyInputStreamToFile(stream, new File(directory, "example.json"));
     }
 
     /**
