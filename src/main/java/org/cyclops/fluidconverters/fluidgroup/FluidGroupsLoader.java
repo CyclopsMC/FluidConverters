@@ -69,20 +69,29 @@ public class FluidGroupsLoader {
     }
 
     /**
+     * Copies a template from the jar to the given directory
+     */
+    private void copyTemplate(String filename, File directory) throws IOException {
+        // Check if the given file exists
+        InputStream stream = getClass().getResourceAsStream(Reference.ASSETS_PATH + filename);
+        if (stream == null)
+            throw new FileNotFoundException("Unable to initialize the config directory: the example file '"
+                    + filename + "' does not exist.");
+
+        // Copy the file over
+        FileUtils.copyInputStreamToFile(stream, new File(directory, filename));
+    }
+
+    /**
      * Initializes the config directory and adds a sample file.
      * @param directory The config directory.
      */
     private void initConfigDirectory(File directory) throws IOException {
-        // Check if the example resource exists
-        InputStream stream = getClass().getResourceAsStream(Reference.ASSETS_PATH + "example.json");
-        if (stream == null)
-            throw new FileNotFoundException("Unable to initialize the config directory: the example file does not exist.");
-
         // mkdir -p configDir
         directory.mkdirs();
 
-        // copy the example file to the config directory
-        FileUtils.copyInputStreamToFile(stream, new File(directory, "example.json"));
+        copyTemplate("example.json.template", directory);
+        copyTemplate("blood.json", directory);
     }
 
     /**
@@ -90,7 +99,7 @@ public class FluidGroupsLoader {
      * @param jsonFile The json file which contains data about the fluid group.
      * @return A parsed fluid group.
      */
-    private FluidGroup parseFluidGroup(File jsonFile) throws FluidGroupFormatException {
+    private FluidGroup   parseFluidGroup(File jsonFile) throws FluidGroupFormatException {
         JsonElement element = null;
         try {
             element = parser.parse(new FileReader(jsonFile));
