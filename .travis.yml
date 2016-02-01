@@ -2,12 +2,9 @@ language: java
 jdk: openjdk7
 notifications:
   email: false
-  slack:
-    secure: TODO
 env:
   global:
   - TERM=dumb
-
 install: ./gradlew setupCIWorkspace -S
 script: ./gradlew build -S
 deploy:
@@ -21,7 +18,7 @@ deploy:
   - provider: releases
     skip_cleanup: true
     api_key:
-      secure: TODO
+      secure: bB1biR3q8ZgB9RrgHx1s5m6yYh1LcS59GL50CU21FjaJB6TZo6ox7pRRM1AN07xhU0LmOZ0XBGuwNF7fGwp0Xlx0YLq9200GqMnwN88HNeYCkhcbNtCqqZUQznFcRMpL/b51oO8LFVVSrSU1Rtlw+epGKuodZ3yutkjlA4mYhBs=
     on:
       all_branches: true
       repo: CyclopsMC/FluidConverters
