@@ -61,7 +61,7 @@ public class FluidGroupsLoader {
                 fluidGroups.add(fluidGroup);
             } catch (FluidGroupFormatException e) {
                 FluidConverters.clog(Level.WARN,
-                        "Failed to parse file '" + jsonFile.getName() + "': " + e.getMessage());
+                        "Failed to load file '" + jsonFile.getName() + "': " + e.getMessage());
             }
         }
 
@@ -151,9 +151,12 @@ public class FluidGroupsLoader {
             try {
                 fluidElementList.add(new FluidGroup.FluidElement(fluidName, value));
             } catch (FluidGroup.NoSuchFluidException e) {
-                throw new FluidGroupFormatException(e.getMessage());
+                FluidConverters.clog(Level.WARN, e.getMessage());
             }
         }
+
+        if (fluidElementList.size() < 2)
+            throw new FluidGroupFormatException("Failed to load at least two fluid elements");
 
         return fluidElementList;
     }
