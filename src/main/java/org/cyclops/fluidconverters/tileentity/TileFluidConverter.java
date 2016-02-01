@@ -23,7 +23,7 @@ import java.util.TreeMap;
 public class TileFluidConverter extends CyclopsTileEntity implements IFluidHandler, CyclopsTileEntity.ITickingTile {
 
     // Maximum size of the internal buffer
-    private static final int MAX_BUFFER_SIZE = 1000;
+    public static final int MAX_BUFFER_SIZE = 1000;
     // Rate at which we output millibuckets each tick
     private static final int MBRATE = 10;
 
@@ -43,11 +43,22 @@ public class TileFluidConverter extends CyclopsTileEntity implements IFluidHandl
     @Getter
     // Internal buffer that keeps liquid as normalized units
     private float buffer;
+    // NOTE: Value should be same as the name of the field above
+    public static final String NBT_BUFFER = "buffer";
 
     @Delegate
     protected final ITickingTile tickingTileComponent = new TickingTileComponent(this);
 
     public TileFluidConverter() {
+    }
+
+    public void setBuffer(float newBuffer) {
+        if (this.buffer != newBuffer) {
+            this.buffer = newBuffer;
+
+            // Force an explicit update when setting the buffer
+            this.sendUpdate();
+        }
     }
 
     /**
@@ -96,7 +107,7 @@ public class TileFluidConverter extends CyclopsTileEntity implements IFluidHandl
         // Fill up the actual handler
         if (doFill && fluidAmountFilled > 0) {
             fluidAmountFilled = Math.max(0, handler.fill(from, fluidStack, true));
-            buffer -= fluidElement.normalize(fluidAmountFilled);
+            setBuffer(buffer - fluidElement.normalize(fluidAmountFilled));
         }
 
         return fluidAmountFilled;
@@ -130,8 +141,9 @@ public class TileFluidConverter extends CyclopsTileEntity implements IFluidHandl
         float newBufferSize = buffer + normalizedAmount;
         boolean canFill = newBufferSize <= maxBufferSize;
 
-        if (doFill && canFill)
-            buffer = newBufferSize;
+        if (doFill && canFill) {
+            setBuffer(newBufferSize);
+        }
 
         return canFill;
     }

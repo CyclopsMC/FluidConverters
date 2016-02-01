@@ -12,11 +12,13 @@ import org.cyclops.cyclopscore.config.extendedconfig.BlockItemConfigReference;
 import org.cyclops.cyclopscore.init.ItemCreativeTab;
 import org.cyclops.cyclopscore.init.ModBaseVersionable;
 import org.cyclops.cyclopscore.init.RecipeHandler;
+import org.cyclops.cyclopscore.modcompat.ModCompatLoader;
 import org.cyclops.cyclopscore.proxy.ICommonProxy;
 import org.cyclops.fluidconverters.block.BlockFluidConverterConfig;
 import org.cyclops.fluidconverters.fluidgroup.FluidGroup;
 import org.cyclops.fluidconverters.fluidgroup.FluidGroupRegistry;
 import org.cyclops.fluidconverters.fluidgroup.FluidGroupsLoader;
+import org.cyclops.fluidconverters.modcompat.waila.WailaModCompat;
 
 import java.io.File;
 import java.io.IOException;
@@ -60,6 +62,12 @@ public class FluidConverters extends ModBaseVersionable {
     @Override
     protected RecipeHandler constructRecipeHandler() {
         return new RecipeHandler(this);
+    }
+
+    @Override
+    protected void loadModCompats(ModCompatLoader modCompatLoader) {
+        super.loadModCompats(modCompatLoader);
+        modCompatLoader.addModCompat(new WailaModCompat());
     }
 
     /**
