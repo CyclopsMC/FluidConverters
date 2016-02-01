@@ -1,0 +1,7 @@
+# General
+info.invalid=Invalid converter
+itemGroup.fluidConverters=Fluid Converters
+
+# Blocks
+tile.blocks.fluidConverters.fluidConverter.name=Fluid Converter
+tile.blocks.fluidConverters.fluidConverter.converter=Converter

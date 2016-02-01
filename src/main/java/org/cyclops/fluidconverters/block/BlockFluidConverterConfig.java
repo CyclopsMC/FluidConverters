@@ -21,7 +21,7 @@ public class BlockFluidConverterConfig extends BlockContainerConfig {
         super(
             FluidConverters._instance,
             true,
-            "fluidconverter",
+            "fluidConverter",
             null,
             BlockFluidConverter.class
         );

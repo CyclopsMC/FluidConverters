@@ -14,7 +14,7 @@ import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 public class Reference {
 	
     // Mod info
-    public static final String MOD_ID = "fluidconverters";
+    public static final String MOD_ID = "fluidConverters";
     public static final String MOD_NAME = "FluidConverters";
     public static final String MOD_VERSION = "@VERSION@";
     public static final String MOD_BUILD_NUMBER = "@BUILD_NUMBER@";

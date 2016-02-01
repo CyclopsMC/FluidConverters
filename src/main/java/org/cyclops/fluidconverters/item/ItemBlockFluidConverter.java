@@ -40,21 +40,26 @@ public class ItemBlockFluidConverter extends ItemBlockNBT {
 
         if (fluidGroup != null) {
             list.add(EnumChatFormatting.GOLD +
-                L10NHelpers.localize("tile.blocks.fluidConverter.converter") + ": " +
+                L10NHelpers.localize("tile.blocks.fluidConverters.fluidConverter.converter") + ": " +
                 fluidGroup.getGroupName()
             );
 
             if (MinecraftHelpers.isShifted()) {
-                for (FluidGroup.FluidElement fluidElement : fluidGroup.getFluidElements()) {
-                    list.add(EnumChatFormatting.GRAY +
-                        fluidElement.getFluid().getLocalizedName(null) + ": " +
-                        "%.2f".format(fluidElement.getValue() + "")
-                    );
+                List<FluidGroup.FluidElement> fluidElements = fluidGroup.getFluidElements();
+                if (fluidElements != null) {
+                    for (FluidGroup.FluidElement fluidElement : fluidElements) {
+                        list.add(EnumChatFormatting.GRAY +
+                                        fluidElement.getFluid().getLocalizedName(null) + ": " +
+                                        "%.2f".format(fluidElement.getValue() + "")
+                        );
+                    }
                 }
             } else {
                 list.add("" + EnumChatFormatting.GRAY + EnumChatFormatting.ITALIC +
                     L10NHelpers.localize("general.cyclopscore.tooltip.info"));
             }
+        } else {
+            list.add(EnumChatFormatting.ITALIC + L10NHelpers.localize("info.invalid"));
         }
     }
 }
