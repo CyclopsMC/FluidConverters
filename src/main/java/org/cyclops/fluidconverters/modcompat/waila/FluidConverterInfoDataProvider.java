@@ -40,7 +40,6 @@ public class FluidConverterInfoDataProvider implements IWailaDataProvider {
 
             FluidGroup group = ref == null ? null : ref.getFluidGroup();
             float buffer = tile.getBuffer();
-            System.out.println("BUFFER " + buffer);
 
             ItemBlockFluidConverter.addInformation(currenttip, group, buffer, true);
         }
