@@ -1,0 +1,7 @@
+# General
+info.invalid=无效的转化器
+itemGroup.fluidConverters=流体转化器
+
+# Blocks
+tile.blocks.fluidConverters.fluidConverter.name=流体转化器
+tile.blocks.fluidConverters.fluidConverter.converter=转化器
