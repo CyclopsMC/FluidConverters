@@ -1,5 +1,7 @@
 package org.cyclops.fluidconverters;
 
+import com.google.common.collect.Maps;
+import net.minecraft.command.ICommand;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -7,6 +9,7 @@ import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
 import org.apache.logging.log4j.Level;
+import org.cyclops.cyclopscore.command.CommandMod;
 import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.config.extendedconfig.BlockItemConfigReference;
 import org.cyclops.cyclopscore.init.ItemCreativeTab;
@@ -15,6 +18,7 @@ import org.cyclops.cyclopscore.init.RecipeHandler;
 import org.cyclops.cyclopscore.modcompat.ModCompatLoader;
 import org.cyclops.cyclopscore.proxy.ICommonProxy;
 import org.cyclops.fluidconverters.block.BlockFluidConverterConfig;
+import org.cyclops.fluidconverters.command.CommandListFluids;
 import org.cyclops.fluidconverters.fluidgroup.FluidGroup;
 import org.cyclops.fluidconverters.fluidgroup.FluidGroupRegistry;
 import org.cyclops.fluidconverters.fluidgroup.FluidGroupsLoader;
@@ -22,6 +26,7 @@ import org.cyclops.fluidconverters.modcompat.waila.WailaModCompat;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -57,6 +62,13 @@ public class FluidConverters extends ModBaseVersionable {
 
     public FluidConverters() {
         super(Reference.MOD_ID, Reference.MOD_NAME, Reference.MOD_VERSION);
+    }
+
+    @Override
+    protected ICommand constructBaseCommand() {
+        HashMap<String, ICommand> map = Maps.<String, ICommand>newHashMap();
+        map.put(CommandListFluids.NAME, new CommandListFluids(this));
+        return new CommandMod(this, map);
     }
 
     @Override
