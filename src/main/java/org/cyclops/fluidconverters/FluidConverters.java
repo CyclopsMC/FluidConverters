@@ -94,18 +94,6 @@ public class FluidConverters extends ModBaseVersionable {
     @EventHandler
     @Override
     public void init(FMLInitializationEvent event) {
-        super.init(event);
-    }
-    
-    /**
-     * Register the event hooks.
-     * @param event The Forge event required for this.
-     */
-    @EventHandler
-    @Override
-    public void postInit(FMLPostInitializationEvent event) {
-        super.postInit(event);
-
         // Load all fluid groups
         List<FluidGroup> fluidGroups = fluidGroupsLoader.load();
         // Add them to the registry
@@ -117,6 +105,19 @@ public class FluidConverters extends ModBaseVersionable {
             FluidGroup group = it.next();
             clog("Registered fluid group '" + group.getGroupName() + "' (" + group.getGroupId() + ")");
         }
+
+        // Call super method
+        super.init(event);
+    }
+    
+    /**
+     * Register the event hooks.
+     * @param event The Forge event required for this.
+     */
+    @EventHandler
+    @Override
+    public void postInit(FMLPostInitializationEvent event) {
+        super.postInit(event);
     }
     
     /**
