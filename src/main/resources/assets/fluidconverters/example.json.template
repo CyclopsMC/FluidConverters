@@ -11,6 +11,6 @@
       "value": 2.0
     }
   ],
-  "lossRatio": 1.0,
+  "lossRatio": 0.5,
   "hasRecipe": true
 }

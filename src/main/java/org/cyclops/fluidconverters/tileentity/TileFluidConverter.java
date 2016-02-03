@@ -102,14 +102,18 @@ public class TileFluidConverter extends CyclopsTileEntity implements IFluidHandl
      * @param from The facing on the block from which the fluid will be pushed
      * @param fluidElement Fluid element that describes the fluid and its weight
      * @param amount The amount of the given fluid that needs to filled (in normalized units)
+     * @param lossRatio Loss ratio on the amount that is filled
      * @param doFill Indicates if we should only simulate or not
      * @return The amount of fluid (in fluid units) that was filled into the handler
      */
-    private int tryToFillFluid(IFluidHandler handler, EnumFacing from, FluidGroup.FluidElement fluidElement, int amount, boolean doFill) {
+    private int tryToFillFluid(IFluidHandler handler, EnumFacing from, FluidGroup.FluidElement fluidElement,
+                               int amount, float lossRatio, boolean doFill) {
         // We can only drain from here if we have at least that amount in the buffer
         if (buffer < amount) return 0;
 
-        int amountToBeFilled = MathHelper.floor_float(fluidElement.denormalize(amount));
+        // Calculate the max amount of fluid (in fluid units) that will be passed to the output,
+        // keeping loss into account
+        int amountToBeFilled = MathHelper.floor_float(fluidElement.denormalize((1 - lossRatio) * amount));
         FluidStack fluidStack = new FluidStack(fluidElement.getFluid(), amountToBeFilled);
 
         // Simulate filling the handler
@@ -117,7 +121,11 @@ public class TileFluidConverter extends CyclopsTileEntity implements IFluidHandl
         // Fill up the actual handler
         if (doFill && fluidAmountFilled > 0) {
             fluidAmountFilled = Math.max(0, handler.fill(from, fluidStack, true));
-            setBuffer(buffer - fluidElement.normalize(fluidAmountFilled));
+            if (fluidAmountFilled > 0) {
+                // Calculate the amount of fluid that is drained from the buffer
+                float amountLost = fluidElement.normalize(fluidAmountFilled) / (1 - lossRatio);
+                setBuffer(buffer - amountLost);
+            }
         }
 
         return fluidAmountFilled;
@@ -139,7 +147,8 @@ public class TileFluidConverter extends CyclopsTileEntity implements IFluidHandl
 
             // Try to fill fluid to this handler and update the buffer
             if (handler != null && handler.canFill(fillSide, fluid)) {
-                tryToFillFluid(handler, fillSide, getFluidGroup().getFluidElementByFluid(fluid), MBRATE, true);
+                FluidGroup fluidGroup = getFluidGroup();
+                tryToFillFluid(handler, fillSide, fluidGroup.getFluidElementByFluid(fluid), MBRATE, fluidGroup.getLossRatio(), true);
                 if (buffer < MBRATE) return;    // quit if there is nothing left to drain here
             }
         }
@@ -148,9 +157,8 @@ public class TileFluidConverter extends CyclopsTileEntity implements IFluidHandl
     private boolean addToBuffer(FluidGroup.FluidElement sourceFluidElement, int amount, boolean doFill) {
         // Save the liquid amount in the internal buffer only if we can fit all the fluid in the buffer
         float normalizedAmount = sourceFluidElement.normalize(amount);
-        float maxBufferSize = sourceFluidElement.normalize(MAX_BUFFER_SIZE);
         float newBufferSize = buffer + normalizedAmount;
-        boolean canFill = newBufferSize <= maxBufferSize;
+        boolean canFill = newBufferSize <= MAX_BUFFER_SIZE;
 
         if (doFill && canFill) {
             setBuffer(newBufferSize);
@@ -181,8 +189,9 @@ public class TileFluidConverter extends CyclopsTileEntity implements IFluidHandl
         if (handler == null) return null;
 
         // Try to fill it up
-        FluidGroup.FluidElement fluidElement = getFluidGroup().getFluidElementByFluid(fluid);
-        int liquidDrained = tryToFillFluid(handler, from.getOpposite(), fluidElement, amount, doDrain);
+        FluidGroup fluidGroup = getFluidGroup();
+        FluidGroup.FluidElement fluidElement = fluidGroup.getFluidElementByFluid(fluid);
+        int liquidDrained = tryToFillFluid(handler, from.getOpposite(), fluidElement, amount, fluidGroup.getLossRatio(), doDrain);
 
         return new FluidStack(fluid, liquidDrained);
     }
