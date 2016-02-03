@@ -22,7 +22,6 @@ public class FluidGroup {
 
     private String groupName;
     private float lossRatio;
-    private boolean hasRecipe;
     private boolean hasDefaultRecipe;
 
     /**

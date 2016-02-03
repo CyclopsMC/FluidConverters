@@ -125,7 +125,6 @@ public class FluidGroupsLoader {
 
         // Parse optional properties
         String groupName = getOptionalPrimitiveProperty(fluidGroup, "groupName", groupId, String.class);
-        boolean hasRecipe = getOptionalPrimitiveProperty(fluidGroup, "hasRecipe", true, Boolean.class);
         boolean hasDefaultRecipe = getOptionalPrimitiveProperty(fluidGroup, "hasDefaultRecipe", true, Boolean.class);
 
         float lossRatio = getOptionalPrimitiveProperty(fluidGroup, "lossRatio", 0f, Float.class);
@@ -136,7 +135,6 @@ public class FluidGroupsLoader {
         FluidGroup result = new FluidGroup(groupId, fluidElementList);
         result.setGroupName(groupName);
         result.setLossRatio(lossRatio);
-        result.setHasRecipe(hasRecipe);
         result.setHasDefaultRecipe(hasDefaultRecipe);
         return result;
     }

@@ -33,14 +33,11 @@ public class FluidConvertersRecipeHandler extends RecipeHandler {
     protected void loadPredefineds(Map<String, ItemStack> predefinedItems, Set<String> predefinedValues) {
         super.loadPredefineds(predefinedItems, predefinedValues);
 
-        // Loop over all fluid groups
+        // Add predefined items for every single fluid converter
         Iterator<FluidGroup> it = FluidGroupRegistry.iterator();
         while (it.hasNext()) {
             FluidGroup fluidGroup = it.next();
-
-            // Only add predefined fluid converters for fluid groups that should have a recipe
-            if (fluidGroup.isHasRecipe())
-                predefinedItems.put(predefinedId(fluidGroup), BlockFluidConverter.createItemStack(fluidGroup));
+            predefinedItems.put(predefinedId(fluidGroup), BlockFluidConverter.createItemStack(fluidGroup));
         }
     }
 
