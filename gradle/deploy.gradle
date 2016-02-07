@@ -8,7 +8,7 @@ curseforge {
     }
 
     project {
-        id = "TODO" // my project url is http://minecraft.curseforge.com/mc-mods/TODO/
+        id = "223737" // my project url is http://minecraft.curseforge.com/mc-mods/TODO/
         releaseType = project.config.release_type
         mainArtifact(jar) {
             relations {
@@ -65,7 +65,7 @@ uploadArchives {
         pom.project {
             name project.archivesBaseName
             packaging 'jar'
-            description 'todo'
+            description 'A mod for converting fluids.'
             url 'https://github.com/CyclopsMC/FluidConverters'
 
             scm {
