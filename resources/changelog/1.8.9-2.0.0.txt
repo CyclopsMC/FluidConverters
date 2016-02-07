@@ -1,0 +1,5 @@
+Complete rewrite for minecraft 1.8.9
+Requires Cyclops version 0.5.0
+
+More information about the config file format can be found here: https://github.com/CyclopsMC/FluidConverters/wiki
+
