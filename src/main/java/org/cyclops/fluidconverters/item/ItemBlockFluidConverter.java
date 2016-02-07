@@ -76,6 +76,9 @@ public class ItemBlockFluidConverter extends ItemBlockNBT {
                         );
                     }
                 }
+
+                info.add("" + EnumChatFormatting.DARK_GRAY +
+                    "Loss rate: " + (fluidGroup.getLossRatio() * 100) + " %");
             } else {
                 info.add("" + EnumChatFormatting.GRAY + EnumChatFormatting.ITALIC +
                         L10NHelpers.localize("general.cyclopscore.tooltip.info"));
