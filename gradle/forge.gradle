@@ -2,8 +2,8 @@ repositories {
     mavenCentral()
     mavenLocal()
     maven {
-        name "RubensWorks FS"
-        url "http://maven.rubensworks.net/"
+        name "Cyclops Repo"
+        url "https://dl.bintray.com/cyclopsmc/dev/"
     }
     maven {
         name "Mobius Repo"
