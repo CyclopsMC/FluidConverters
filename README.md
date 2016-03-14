@@ -1,6 +1,7 @@
 ## FluidConverters
 
 [![Build Status](https://travis-ci.org/CyclopsMC/FluidConverters.svg?branch=master-1.8)](https://travis-ci.org/CyclopsMC/FluidConverters)
+[![Download](https://api.bintray.com/packages/cyclopsmc/dev/FluidConverters/images/download.svg) ](https://bintray.com/cyclopsmc/dev/FluidConverters/_latestVersion)
 
 A mod for converting fluids.
 
