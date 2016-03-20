@@ -19,7 +19,7 @@ dependencies {
     }
 
     // Mod compatibility
-    compile "mcp.mobius.waila:Waila:${config.waila_version}:dev" // http://mobiusstrip.eu/maven/mcp/mobius/waila/Waila/
+    //compile "mcp.mobius.waila:Waila:${config.waila_version}:dev" // http://mobiusstrip.eu/maven/mcp/mobius/waila/Waila/
 
     // Project lombok
     compile "org.projectlombok:lombok:1.14.4"
@@ -42,7 +42,7 @@ minecraft {
     // stable_#            stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not allways work.
     // simply re-run your setup task after changing the mappings to update your workspace.
-    mappings = "snapshot_20151230"
+    mappings = "${config.mcp_mappings_version}"
 }
 
 if (project.buildnumber.equals("RELEASE"))

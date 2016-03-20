@@ -4,7 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.item.ItemBlockNBT;
@@ -56,35 +56,35 @@ public class ItemBlockFluidConverter extends ItemBlockNBT {
      */
     public static void addInformation(List info, FluidGroup fluidGroup, float buffer, boolean isShifted) {
         if (fluidGroup != null) {
-            info.add(EnumChatFormatting.GOLD +
+            info.add(TextFormatting.GOLD +
                             L10NHelpers.localize("tile.blocks.fluidconverters.fluidconverter.converter") + ": " +
                             fluidGroup.getGroupName()
             );
 
             if (isShifted) {
                 // Buffer info
-                info.add("" + EnumChatFormatting.DARK_GRAY +
+                info.add("" + TextFormatting.DARK_GRAY +
                         "Buffer: " + buffer + " / " + TileFluidConverter.MAX_BUFFER_SIZE);
 
                 // Fluid elements
                 List<FluidGroup.FluidElement> fluidElements = fluidGroup.getFluidElements();
                 if (fluidElements != null) {
                     for (FluidGroup.FluidElement fluidElement : fluidElements) {
-                        info.add(EnumChatFormatting.GRAY +
+                        info.add(TextFormatting.GRAY +
                                         fluidElement.getFluid().getLocalizedName(null) + ": " +
                                         "%.2f".format(fluidElement.getValue() + "")
                         );
                     }
                 }
 
-                info.add("" + EnumChatFormatting.DARK_GRAY +
+                info.add("" + TextFormatting.DARK_GRAY +
                     "Loss rate: " + (fluidGroup.getLossRatio() * 100) + " %");
             } else {
-                info.add("" + EnumChatFormatting.GRAY + EnumChatFormatting.ITALIC +
+                info.add("" + TextFormatting.GRAY + TextFormatting.ITALIC +
                         L10NHelpers.localize("general.cyclopscore.tooltip.info"));
             }
         } else {
-            info.add(EnumChatFormatting.ITALIC + L10NHelpers.localize("info.invalid"));
+            info.add(TextFormatting.ITALIC + L10NHelpers.localize("info.invalid"));
         }
     }
 }

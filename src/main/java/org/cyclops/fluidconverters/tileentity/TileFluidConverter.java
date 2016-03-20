@@ -3,7 +3,7 @@ package org.cyclops.fluidconverters.tileentity;
 import lombok.Getter;
 import lombok.experimental.Delegate;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;

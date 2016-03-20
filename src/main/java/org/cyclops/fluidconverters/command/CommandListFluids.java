@@ -5,7 +5,8 @@ import com.google.common.collect.Maps;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -42,7 +43,7 @@ public class CommandListFluids extends CommandMod {
     }
 
     private void printMessage(ICommandSender sender, String message) {
-        sender.addChatMessage(new ChatComponentText(message));
+        sender.addChatMessage(new TextComponentString(message));
     }
 
     private String join(Collection collection, String delim) {
@@ -68,7 +69,7 @@ public class CommandListFluids extends CommandMod {
     }
 
     @Override
-    public void processCommand(ICommandSender icommandsender, String[] astring) throws CommandException {
+    public void execute(MinecraftServer server, ICommandSender icommandsender, String[] astring) throws CommandException {
         List<String> info = Lists.newArrayList();
 
         if (astring.length == 1) {
@@ -86,6 +87,6 @@ public class CommandListFluids extends CommandMod {
             }
         }
 
-        icommandsender.addChatMessage(new ChatComponentText(join(info, ", ")));
+        icommandsender.addChatMessage(new TextComponentString(join(info, ", ")));
     }
 }

@@ -2,17 +2,17 @@ package org.cyclops.fluidconverters.block;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.IBakedModel;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.ModelBakeEvent;
@@ -33,7 +33,6 @@ import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.helper.TileHelpers;
 import org.cyclops.cyclopscore.persist.nbt.NBTClassType;
 import org.cyclops.fluidconverters.client.model.ModelFluidConverter;
-import org.cyclops.fluidconverters.client.model.ModelFluidConverterFactory;
 import org.cyclops.fluidconverters.fluidgroup.FluidGroup;
 import org.cyclops.fluidconverters.fluidgroup.FluidGroupReference;
 import org.cyclops.fluidconverters.fluidgroup.FluidGroupRegistry;
@@ -66,6 +65,9 @@ public class BlockFluidConverter extends ConfigurableBlockContainer {
     public TextureAtlasSprite fluidCenterTexture;
 
     private static BlockFluidConverter _instance = null;
+
+    @SideOnly(Side.CLIENT)
+    private IBakedModel baseModel;
 
     /**
      * Get the unique instance of this class.
@@ -114,7 +116,7 @@ public class BlockFluidConverter extends ConfigurableBlockContainer {
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
         ItemStack itemStack = player.inventory.getCurrentItem();
         TileFluidConverter tile = (TileFluidConverter) world.getTileEntity(pos);
         Fluid fluid = null;
@@ -135,9 +137,9 @@ public class BlockFluidConverter extends ConfigurableBlockContainer {
         if (fluidGroup == null) return true;
 
         // DEBUG
-        player.addChatComponentMessage(new ChatComponentText("fluid group: " + fluidGroup.getGroupName()));
+        player.addChatComponentMessage(new TextComponentString("fluid group: " + fluidGroup.getGroupName()));
         for (Map.Entry<EnumFacing, Fluid> entry : tile.getFluidOutputs().entrySet()) {
-            player.addChatComponentMessage(new ChatComponentText(
+            player.addChatComponentMessage(new TextComponentString(
                     entry.getKey().toString() + ": " + entry.getValue().getName()
             ));
         }
@@ -153,7 +155,7 @@ public class BlockFluidConverter extends ConfigurableBlockContainer {
     @SideOnly(Side.CLIENT)
     @Override
     public IBakedModel createDynamicModel() {
-        return new ModelFluidConverterFactory();
+        return new ModelFluidConverter(baseModel);
     }
 
     private Map<EnumFacing, Fluid> toBlockFluidOutputs(Map<EnumFacing, FluidGroup.FluidElement> tileFluidOutputs) {
@@ -184,16 +186,13 @@ public class BlockFluidConverter extends ConfigurableBlockContainer {
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void onModelBakeEvent(ModelBakeEvent event) {
-        ModelResourceLocation modelResourceLocation;
-        IBakedModel baseModel = (IBakedModel) event.modelRegistry.getObject(ModelFluidConverter.blockModelResourceLocation);
-        ModelFluidConverterFactory.setBaseModel(baseModel);
-
+        baseModel = event.getModelRegistry().getObject(ModelFluidConverter.blockModelResourceLocation);
         IBakedModel model = this.createDynamicModel();
 
         // Register the block model
-        event.modelRegistry.putObject(ModelFluidConverter.blockModelResourceLocation, model);
+        event.getModelRegistry().putObject(ModelFluidConverter.blockModelResourceLocation, model);
         // Register the same model as the item model
-        event.modelRegistry.putObject(ModelFluidConverter.itemModelResourceLocation, model);
+        event.getModelRegistry().putObject(ModelFluidConverter.itemModelResourceLocation, model);
     }
 
     /**
