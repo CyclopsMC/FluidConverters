@@ -19,7 +19,7 @@ dependencies {
     }
 
     // Mod compatibility
-    //compile "mcp.mobius.waila:Waila:${config.waila_version}:dev" // http://mobiusstrip.eu/maven/mcp/mobius/waila/Waila/
+    compile "mcp.mobius.waila:Waila:${config.waila_version}:dev" // http://mobiusstrip.eu/maven/mcp/mobius/waila/Waila/
 
     // Project lombok
     compile "org.projectlombok:lombok:1.14.4"

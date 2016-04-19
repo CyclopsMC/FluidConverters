@@ -61,12 +61,3 @@ idea {
         sourceDirs += file('src/api/java')
     }
 }
-
-sourceSets {
-    main {
-        java {
-            // TODO: remove when waila is updated to 1.9
-            exclude 'org/cyclops/fluidconverters/modcompat/waila/**'
-        }
-    }
-}
