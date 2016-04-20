@@ -6,6 +6,7 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
+import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.init.RecipeHandler;
 import org.cyclops.fluidconverters.block.BlockFluidConverter;
@@ -63,17 +64,23 @@ public class FluidConvertersRecipeHandler extends RecipeHandler {
                             new ItemStack(Items.bucket)
                     );
 
-                    // Create the default recipe
-                    GameRegistry.addRecipe(new ShapedOreRecipe(result, true,
-                            new Object[]{
-                                    "I I",
-                                    "GBG",
-                                    "I I",
-                                    'B', container,
-                                    'G', new ItemStack(Items.gold_nugget),
-                                    'I', new ItemStack(Items.iron_ingot)
-                            }
-                    ));
+                    if(container != null) {
+                        // Create the default recipe
+                        GameRegistry.addRecipe(new ShapedOreRecipe(result, true,
+                                new Object[]{
+                                        "I I",
+                                        "GBG",
+                                        "I I",
+                                        'B', container,
+                                        'G', new ItemStack(Items.gold_nugget),
+                                        'I', new ItemStack(Items.iron_ingot)
+                                }
+                        ));
+                    } else {
+                        getMod().log(Level.WARN, String.format("Skipped registering default fluid converter crafting " +
+                                "recipe for fluid groups %s due to a non-existing fluid container for fluid %s",
+                                fluidGroup.getGroupName(), el.getFluid().getName()));
+                    }
                 }
             }
         }
