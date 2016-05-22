@@ -61,7 +61,7 @@ public class FluidConvertersRecipeHandler extends RecipeHandler {
                     // Create a filled container
                     ItemStack container = FluidContainerRegistry.fillFluidContainer(
                             new FluidStack(el.getFluid(), FluidContainerRegistry.BUCKET_VOLUME),
-                            new ItemStack(Items.bucket)
+                            new ItemStack(Items.BUCKET)
                     );
 
                     if(container != null) {
@@ -72,8 +72,8 @@ public class FluidConvertersRecipeHandler extends RecipeHandler {
                                         "GBG",
                                         "I I",
                                         'B', container,
-                                        'G', new ItemStack(Items.gold_nugget),
-                                        'I', new ItemStack(Items.iron_ingot)
+                                        'G', new ItemStack(Items.GOLD_NUGGET),
+                                        'I', new ItemStack(Items.IRON_INGOT)
                                 }
                         ));
                     } else {

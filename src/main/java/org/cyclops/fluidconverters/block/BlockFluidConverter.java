@@ -84,7 +84,7 @@ public class BlockFluidConverter extends ConfigurableBlockContainer {
      * @param eConfig    Config for this blockState.
      */
     public BlockFluidConverter(ExtendedConfig eConfig) {
-        super(eConfig, Material.iron, TileFluidConverter.class);
+        super(eConfig, Material.IRON, TileFluidConverter.class);
 
         if(MinecraftHelpers.isClientSide()) {
             // Listen to ModelBakeEvents

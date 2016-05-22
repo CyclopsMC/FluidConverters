@@ -133,7 +133,7 @@ public class ModelFluidConverter extends DynamicItemAndBlockModel {
 
     @Override
     public TextureAtlasSprite getParticleTexture() {
-        return RenderHelpers.getBlockIcon(Blocks.iron_block);
+        return RenderHelpers.getBlockIcon(Blocks.IRON_BLOCK);
     }
 
 }
