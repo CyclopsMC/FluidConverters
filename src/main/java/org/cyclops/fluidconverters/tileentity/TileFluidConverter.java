@@ -6,21 +6,24 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.FluidTankProperties;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import org.cyclops.cyclopscore.helper.TileHelpers;
 import org.cyclops.cyclopscore.persist.nbt.NBTPersist;
 import org.cyclops.cyclopscore.tileentity.CyclopsTileEntity;
 import org.cyclops.fluidconverters.fluidgroup.FluidGroup;
 import org.cyclops.fluidconverters.fluidgroup.FluidGroupReference;
 
+import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.TreeMap;
 
 /**
  * Tile Entity for {@link org.cyclops.fluidconverters.block.BlockFluidConverter}
  */
-public class TileFluidConverter extends CyclopsTileEntity implements IFluidHandler, CyclopsTileEntity.ITickingTile {
+public class TileFluidConverter extends CyclopsTileEntity implements CyclopsTileEntity.ITickingTile {
 
     // Maximum size of the internal buffer
     public static final int MAX_BUFFER_SIZE = 1000;
@@ -50,6 +53,9 @@ public class TileFluidConverter extends CyclopsTileEntity implements IFluidHandl
     protected final ITickingTile tickingTileComponent = new TickingTileComponent(this);
 
     public TileFluidConverter() {
+        for (EnumFacing side : EnumFacing.VALUES) {
+            addCapabilitySided(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side, new FluidConverterCapability(this, side));
+        }
     }
 
     public boolean isValidConverter() {
@@ -99,14 +105,13 @@ public class TileFluidConverter extends CyclopsTileEntity implements IFluidHandl
     /**
      * Tries to fill the given handler with a given amount of fluid, specified in normalized units.
      * @param handler Destination for the fluid
-     * @param from The facing on the block from which the fluid will be pushed
      * @param fluidElement Fluid element that describes the fluid and its weight
      * @param amount The amount of the given fluid that needs to filled (in normalized units)
      * @param lossRatio Loss ratio on the amount that is filled
      * @param doFill Indicates if we should only simulate or not
      * @return The amount of fluid (in fluid units) that was filled into the handler
      */
-    private int tryToFillFluid(IFluidHandler handler, EnumFacing from, FluidGroup.FluidElement fluidElement,
+    private int tryToFillFluid(IFluidHandler handler, FluidGroup.FluidElement fluidElement,
                                int amount, float lossRatio, boolean doFill) {
         // We can only drain from here if we have at least that amount in the buffer
         if (buffer < amount) return 0;
@@ -117,10 +122,10 @@ public class TileFluidConverter extends CyclopsTileEntity implements IFluidHandl
         FluidStack fluidStack = new FluidStack(fluidElement.getFluid(), amountToBeFilled);
 
         // Simulate filling the handler
-        int fluidAmountFilled = Math.max(0, handler.fill(from, fluidStack, false));
+        int fluidAmountFilled = Math.max(0, handler.fill(fluidStack, false));
         // Fill up the actual handler
         if (doFill && fluidAmountFilled > 0) {
-            fluidAmountFilled = Math.max(0, handler.fill(from, fluidStack, true));
+            fluidAmountFilled = Math.max(0, handler.fill(fluidStack, true));
             if (fluidAmountFilled > 0) {
                 // Calculate the amount of fluid that is drained from the buffer
                 float amountLost = fluidElement.normalize(fluidAmountFilled) / (1 - lossRatio);
@@ -139,15 +144,16 @@ public class TileFluidConverter extends CyclopsTileEntity implements IFluidHandl
         for (Map.Entry<EnumFacing, Fluid> entry : fluidOutputs.entrySet()) {
             EnumFacing facing = entry.getKey();
             Fluid fluid = entry.getValue();
+            FluidStack toFill = new FluidStack(fluid, MBRATE);
 
             // Check if there is a fluid handler on this side
-            IFluidHandler handler = TileHelpers.getSafeTile(worldObj, getPos().offset(facing), IFluidHandler.class);
-            EnumFacing fillSide = facing.getOpposite();
+            IFluidHandler handler = TileHelpers.getCapability(worldObj, getPos().offset(facing),
+                    facing.getOpposite(), CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
 
             // Try to fill fluid to this handler and update the buffer
-            if (handler != null && handler.canFill(fillSide, fluid)) {
+            if (handler != null && handler.fill(toFill, false) > 0) {
                 FluidGroup fluidGroup = getFluidGroup();
-                filled += tryToFillFluid(handler, fillSide, fluidGroup.getFluidElementByFluid(fluid), MBRATE, fluidGroup.getLossRatio(), !simulate);
+                filled += tryToFillFluid(handler, fluidGroup.getFluidElementByFluid(fluid), MBRATE, fluidGroup.getLossRatio(), !simulate);
                 if (buffer < MBRATE) return filled > 0;    // quit if there is nothing left to drain here
             }
         }
@@ -173,61 +179,69 @@ public class TileFluidConverter extends CyclopsTileEntity implements IFluidHandl
         return canFill;
     }
 
-    @Override
-    public int fill(EnumFacing from, FluidStack resource, boolean doFill) {
-        if (!isValidConverter()) return 0;
-
-        // Fetch the fluid element from the source
-        FluidGroup.FluidElement sourceFluidElement = getFluidGroup().getFluidElementByFluid(resource.getFluid());
-        if (sourceFluidElement == null) return 0;
-
-        // Save all liquid in the buffer
-        boolean addedToBuffer = addToBuffer(sourceFluidElement, resource.amount, doFill);
-
-        return addedToBuffer ? resource.amount : 0;
-    }
-
     private FluidStack doDrain(EnumFacing from, Fluid fluid, int amount, boolean doDrain) {
         if (!isValidConverter()) return null;
 
         // Is there actually anything to fill in that direction?
-        IFluidHandler handler = TileHelpers.getSafeTile(worldObj, getPos().offset(from), IFluidHandler.class);
+        IFluidHandler handler = TileHelpers.getCapability(worldObj, getPos().offset(from),
+                from.getOpposite(), CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
         if (handler == null) return null;
 
         // Try to fill it up
         FluidGroup fluidGroup = getFluidGroup();
         FluidGroup.FluidElement fluidElement = fluidGroup.getFluidElementByFluid(fluid);
-        int liquidDrained = tryToFillFluid(handler, from.getOpposite(), fluidElement, amount, fluidGroup.getLossRatio(), doDrain);
+        int liquidDrained = tryToFillFluid(handler, fluidElement, amount, fluidGroup.getLossRatio(), doDrain);
 
         return new FluidStack(fluid, liquidDrained);
     }
 
-    @Override
-    public FluidStack drain(EnumFacing from, FluidStack resource, boolean simulate) {
-        Fluid fluid = fluidOutputs.get(from);
-        return (fluid != null && resource.getFluid().equals(fluid)) ?
-            doDrain(from, fluid, resource.amount, simulate) : null;
-    }
+    public static class FluidConverterCapability implements IFluidHandler {
 
-    @Override
-    public FluidStack drain(EnumFacing from, int maxDrain, boolean simulate) {
-        Fluid fluid = fluidOutputs.get(from);
-        return fluid == null ? null : doDrain(from, fluid, maxDrain, simulate);
-    }
+        private final TileFluidConverter fluidConverter;
+        private final EnumFacing side;
 
-    @Override
-    public boolean canFill(EnumFacing from, Fluid fluid) {
-        return isValidConverter() && getFluidGroup().getFluidElementByFluid(fluid) != null;
-    }
+        public FluidConverterCapability(TileFluidConverter fluidConverter, EnumFacing side) {
+            this.fluidConverter = fluidConverter;
+            this.side = side;
+        }
 
-    @Override
-    public boolean canDrain(EnumFacing from, Fluid fluid) {
-        return fluid != null && fluid.equals(fluidOutputs.get(from));
-    }
+        @Override
+        public IFluidTankProperties[] getTankProperties() {
+            return new IFluidTankProperties[] { new FluidTankProperties(null, 0)};
+        }
 
-    @Override
-    public FluidTankInfo[] getTankInfo(EnumFacing from) {
-        return new FluidTankInfo[0];
+        @Override
+        public int fill(FluidStack resource, boolean doFill) {
+            if (!fluidConverter.isValidConverter()
+                    || resource == null
+                    || fluidConverter.getFluidGroup().getFluidElementByFluid(resource.getFluid()) == null) return 0;
+
+            // Fetch the fluid element from the source
+            FluidGroup.FluidElement sourceFluidElement = fluidConverter.getFluidGroup().getFluidElementByFluid(resource.getFluid());
+            if (sourceFluidElement == null) return 0;
+
+            // Save all liquid in the buffer
+            boolean addedToBuffer = fluidConverter.addToBuffer(sourceFluidElement, resource.amount, doFill);
+
+            return addedToBuffer ? resource.amount : 0;
+        }
+
+        @Nullable
+        @Override
+        public FluidStack drain(FluidStack resource, boolean doDrain) {
+            if (resource == null || resource.getFluid().equals(fluidConverter.fluidOutputs.get(side))) return null;
+
+            Fluid fluid = fluidConverter.fluidOutputs.get(side);
+            return (fluid != null && resource.getFluid().equals(fluid)) ?
+                    fluidConverter.doDrain(side, fluid, resource.amount, doDrain) : null;
+        }
+
+        @Nullable
+        @Override
+        public FluidStack drain(int maxDrain, boolean doDrain) {
+            Fluid fluid = fluidConverter.fluidOutputs.get(side);
+            return fluid == null ? null : fluidConverter.doDrain(side, fluid, maxDrain, doDrain);
+        }
     }
 
 }
