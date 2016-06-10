@@ -13,6 +13,7 @@ import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import org.cyclops.cyclopscore.helper.TileHelpers;
 import org.cyclops.cyclopscore.persist.nbt.NBTPersist;
 import org.cyclops.cyclopscore.tileentity.CyclopsTileEntity;
+import org.cyclops.fluidconverters.block.BlockFluidConverterConfig;
 import org.cyclops.fluidconverters.fluidgroup.FluidGroup;
 import org.cyclops.fluidconverters.fluidgroup.FluidGroupReference;
 
@@ -27,8 +28,6 @@ public class TileFluidConverter extends CyclopsTileEntity implements CyclopsTile
 
     // Maximum size of the internal buffer
     public static final int MAX_BUFFER_SIZE = 1000;
-    // Rate at which we output millibuckets each tick
-    private static final int MBRATE = 10;
 
     @NBTPersist
     @Getter
@@ -137,14 +136,14 @@ public class TileFluidConverter extends CyclopsTileEntity implements CyclopsTile
     }
 
     public boolean fillSides(boolean simulate) {
-        if (buffer < MBRATE) return false;
+        if (buffer < BlockFluidConverterConfig.mBRate) return false;
 
         // Loop over all possible output directions
         int filled = 0;
         for (Map.Entry<EnumFacing, Fluid> entry : fluidOutputs.entrySet()) {
             EnumFacing facing = entry.getKey();
             Fluid fluid = entry.getValue();
-            FluidStack toFill = new FluidStack(fluid, MBRATE);
+            FluidStack toFill = new FluidStack(fluid, BlockFluidConverterConfig.mBRate);
 
             // Check if there is a fluid handler on this side
             IFluidHandler handler = TileHelpers.getCapability(worldObj, getPos().offset(facing),
@@ -153,8 +152,8 @@ public class TileFluidConverter extends CyclopsTileEntity implements CyclopsTile
             // Try to fill fluid to this handler and update the buffer
             if (handler != null && handler.fill(toFill, false) > 0) {
                 FluidGroup fluidGroup = getFluidGroup();
-                filled += tryToFillFluid(handler, fluidGroup.getFluidElementByFluid(fluid), MBRATE, fluidGroup.getLossRatio(), !simulate);
-                if (buffer < MBRATE) return filled > 0;    // quit if there is nothing left to drain here
+                filled += tryToFillFluid(handler, fluidGroup.getFluidElementByFluid(fluid), BlockFluidConverterConfig.mBRate, fluidGroup.getLossRatio(), !simulate);
+                if (buffer < BlockFluidConverterConfig.mBRate) return filled > 0;    // quit if there is nothing left to drain here
             }
         }
         return filled > 0;
