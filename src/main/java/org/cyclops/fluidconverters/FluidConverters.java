@@ -3,21 +3,18 @@ package org.cyclops.fluidconverters;
 import com.google.common.collect.Maps;
 import net.minecraft.command.ICommand;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
 import org.apache.logging.log4j.Level;
-import org.cyclops.commoncapabilities.api.capability.work.IWorker;
 import org.cyclops.cyclopscore.command.CommandMod;
 import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.config.extendedconfig.BlockItemConfigReference;
 import org.cyclops.cyclopscore.init.ItemCreativeTab;
 import org.cyclops.cyclopscore.init.ModBaseVersionable;
 import org.cyclops.cyclopscore.init.RecipeHandler;
-import org.cyclops.cyclopscore.modcompat.ICapabilityCompat;
 import org.cyclops.cyclopscore.modcompat.ModCompatLoader;
 import org.cyclops.cyclopscore.proxy.ICommonProxy;
 import org.cyclops.fluidconverters.block.BlockFluidConverterConfig;
@@ -89,13 +86,7 @@ public class FluidConverters extends ModBaseVersionable {
         modCompatLoader.addModCompat(new WailaModCompat());
 
         // Capabilities
-        ICapabilityCompat.ICapabilityReference<IWorker> workerReference = new ICapabilityCompat.ICapabilityReference<IWorker>() {
-            @Override
-            public Capability<IWorker> getCapability() {
-                return Capabilities.WORKER;
-            }
-        };
-        modCompatLoader.addCapabilityCompat(TileFluidConverter.class, workerReference, new WorkerFluidConverterTileCompat());
+        getCapabilityConstructorRegistry().registerTile(TileFluidConverter.class, new WorkerFluidConverterTileCompat());
     }
 
     /**
