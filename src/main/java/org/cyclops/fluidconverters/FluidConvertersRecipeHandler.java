@@ -2,8 +2,9 @@ package org.cyclops.fluidconverters;
 
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.*;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import org.apache.logging.log4j.Level;
@@ -59,12 +60,11 @@ public class FluidConvertersRecipeHandler extends RecipeHandler {
                 for (FluidGroup.FluidElement el : fluidGroup.getFluidElements()) {
 
                     // Create a filled container
-                    ItemStack container = FluidContainerRegistry.fillFluidContainer(
-                            new FluidStack(el.getFluid(), FluidContainerRegistry.BUCKET_VOLUME),
-                            new ItemStack(Items.BUCKET)
-                    );
+                    ItemStack container = new ItemStack(Items.BUCKET);
+                    IFluidHandler fluidHandler = container.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+                    int filled = fluidHandler.fill(new FluidStack(el.getFluid(), Fluid.BUCKET_VOLUME), true);
 
-                    if(container != null) {
+                    if(filled == Fluid.BUCKET_VOLUME) {
                         // Create the default recipe
                         GameRegistry.addRecipe(new ShapedOreRecipe(result, true,
                                 new Object[]{

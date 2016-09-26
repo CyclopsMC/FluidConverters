@@ -20,7 +20,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -29,6 +30,7 @@ import org.cyclops.cyclopscore.block.property.UnlistedProperty;
 import org.cyclops.cyclopscore.client.icon.Icon;
 import org.cyclops.cyclopscore.config.configurable.ConfigurableBlockContainer;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
+import org.cyclops.cyclopscore.helper.FluidHelpers;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.helper.TileHelpers;
 import org.cyclops.cyclopscore.persist.nbt.NBTClassType;
@@ -121,9 +123,12 @@ public class BlockFluidConverter extends ConfigurableBlockContainer {
         TileFluidConverter tile = (TileFluidConverter) world.getTileEntity(pos);
         Fluid fluid = null;
 
-        if (itemStack != null && FluidContainerRegistry.isFilledContainer(itemStack)) {
+        if (itemStack != null && itemStack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null)) {
             // Player has a container with a valid fluid: set the output of the tile entity
-            fluid = FluidContainerRegistry.getFluidForFilledItem(itemStack).getFluid();
+            FluidStack fluidStack = FluidHelpers.getFluid(itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null));
+            if (fluidStack != null) {
+                fluid = fluidStack.getFluid();
+            }
         }
 
         // Set or clear the fluid outputs
