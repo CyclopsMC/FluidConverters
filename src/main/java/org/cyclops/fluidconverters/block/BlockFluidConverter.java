@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.IBlockAccess;
@@ -109,7 +110,7 @@ public class BlockFluidConverter extends ConfigurableBlockContainer {
     }
 
     @Override
-    public void getSubBlocks(Item itemIn, CreativeTabs tab, List<ItemStack> list) {
+    public void getSubBlocks(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> list) {
         Iterator<FluidGroup> it = FluidGroupRegistry.iterator();
         while (it.hasNext()) {
             FluidGroup fluidGroup = it.next();
@@ -118,12 +119,12 @@ public class BlockFluidConverter extends ConfigurableBlockContainer {
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         ItemStack itemStack = player.inventory.getCurrentItem();
         TileFluidConverter tile = (TileFluidConverter) world.getTileEntity(pos);
         Fluid fluid = null;
 
-        if (itemStack != null && itemStack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null)) {
+        if (!itemStack.isEmpty() && itemStack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null)) {
             // Player has a container with a valid fluid: set the output of the tile entity
             FluidStack fluidStack = FluidHelpers.getFluid(itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null));
             if (fluidStack != null) {
@@ -142,9 +143,9 @@ public class BlockFluidConverter extends ConfigurableBlockContainer {
         if (fluidGroup == null) return true;
 
         // DEBUG
-        player.addChatComponentMessage(new TextComponentString("fluid group: " + fluidGroup.getGroupName()));
+        player.sendMessage(new TextComponentString("fluid group: " + fluidGroup.getGroupName()));
         for (Map.Entry<EnumFacing, Fluid> entry : tile.getFluidOutputs().entrySet()) {
-            player.addChatComponentMessage(new TextComponentString(
+            player.sendMessage(new TextComponentString(
                     entry.getKey().toString() + ": " + entry.getValue().getName()
             ));
         }
