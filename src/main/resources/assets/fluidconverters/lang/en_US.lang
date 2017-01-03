@@ -11,10 +11,15 @@ config.fluidconverters=%s configuration
 
 ## Config categories
 config.fluidconverters.block=Block settings
+config.fluidconverters.block.tooltip=Block settings
 config.fluidconverters.general=General settings
+config.fluidconverters.general.tooltip=General settings
 config.fluidconverters.core=Core settings
+config.fluidconverters.core.tooltip=Core settings
 config.fluidconverters.machine=Machine settings
+config.fluidconverters.machine.tooltip=Machine settings
 config.fluidconverters.modcompat=Mod compatibility settings
+config.fluidconverters.modcompat.tooltip=Mod compatibility settings
 
 ## Core settings
 config.fluidconverters.general.analytics=Send anonymous analytics
