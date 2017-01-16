@@ -6,6 +6,9 @@ itemGroup.fluidconverters=Fluid Converters
 tile.blocks.fluidconverters.fluidconverter.name=Fluid Converter
 tile.blocks.fluidconverters.fluidconverter.converter=Converter
 
+# JEI Text
+jeigui.fluidconverters.loss=Loss
+
 # Configuration
 config.fluidconverters=%s configuration
 
