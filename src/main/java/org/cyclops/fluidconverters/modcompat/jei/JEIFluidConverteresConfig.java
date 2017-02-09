@@ -1,7 +1,7 @@
 package org.cyclops.fluidconverters.modcompat.jei;
 
 import mezz.jei.api.*;
-import mezz.jei.api.ingredients.IModIngredientRegistration;
+import org.cyclops.fluidconverters.block.BlockFluidConverter;
 import org.cyclops.fluidconverters.modcompat.jei.fluidconverter.FluidConverterRecipeCategory;
 
 import javax.annotation.Nonnull;
@@ -15,6 +15,11 @@ import javax.annotation.Nonnull;
 public class JEIFluidConverteresConfig extends BlankModPlugin implements IModPlugin {
 
     public static IJeiHelpers JEI_HELPER;
+
+    @Override
+    public void registerItemSubtypes(ISubtypeRegistry subtypeRegistry) {
+        subtypeRegistry.useNbtForSubtypes(BlockFluidConverter.createItemStack(null).getItem());
+    }
 
     @Override
     public void register(@Nonnull IModRegistry registry) {

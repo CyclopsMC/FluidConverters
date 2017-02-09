@@ -111,6 +111,7 @@ public class FluidConverterRecipeCategory extends BlankRecipeCategory<FluidConve
     @Override
     public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull FluidConverterRecipeJEI recipeWrapper, @Nonnull IIngredients ingredients) {
       IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
+
       fluidStacks.init(FLUIDINPUT_SLOT, false, 12, 8, 16, 40, 1000, false, null);
         if(recipeWrapper.inputStack != null) {
             fluidStacks.set(FLUIDINPUT_SLOT, recipeWrapper.inputStack);
