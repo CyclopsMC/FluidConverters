@@ -25,6 +25,7 @@ import org.cyclops.fluidconverters.fluidgroup.FluidGroupsLoader;
 import org.cyclops.fluidconverters.modcompat.capabilities.WorkerFluidConverterTileCompat;
 import org.cyclops.fluidconverters.modcompat.waila.WailaModCompat;
 import org.cyclops.fluidconverters.tileentity.TileFluidConverter;
+import org.cyclops.fluidconverters.modcompat.jei.JEIModCompat;
 
 import java.io.File;
 import java.io.IOException;
@@ -84,6 +85,7 @@ public class FluidConverters extends ModBaseVersionable {
 
         // Mods
         modCompatLoader.addModCompat(new WailaModCompat());
+        modCompatLoader.addModCompat(new JEIModCompat());
 
         // Capabilities
         getCapabilityConstructorRegistry().registerTile(TileFluidConverter.class, new WorkerFluidConverterTileCompat());
