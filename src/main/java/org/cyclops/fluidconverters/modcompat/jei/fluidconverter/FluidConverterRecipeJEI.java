@@ -11,6 +11,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fluids.FluidStack;
 
 import org.cyclops.cyclopscore.helper.L10NHelpers;
+import org.cyclops.fluidconverters.block.BlockFluidConverter;
 import org.cyclops.fluidconverters.fluidgroup.FluidGroup;
 import org.cyclops.fluidconverters.fluidgroup.FluidGroup.FluidElement;
 
@@ -31,6 +32,8 @@ import java.util.Map;
 public class FluidConverterRecipeJEI extends BlankRecipeWrapper {
     private final FluidElement fluidInput, fluidOutput;
     public final FluidStack inputStack, outputStack;
+    public final ItemStack fluidConverterStack;
+    
     private final FluidGroup fluidGroup;
     private Rectangle lossTooltipArea;
 
@@ -46,6 +49,8 @@ public class FluidConverterRecipeJEI extends BlankRecipeWrapper {
           inputAmount = MathHelper.floor_float(fluidInput.denormalize((1 - fluidGroup.getLossRatio()) * fluidOutput.normalize(inputAmount)));
           outputAmount = 1000;
       }
+                        
+      this.fluidConverterStack = BlockFluidConverter.createItemStack(fluidGroup);
 
       this.inputStack = new FluidStack(fluidInput.getFluid(),  inputAmount);
       this.outputStack = new FluidStack(fluidOutput.getFluid(), outputAmount);
@@ -53,14 +58,14 @@ public class FluidConverterRecipeJEI extends BlankRecipeWrapper {
 
     @Override
     public void drawInfo(@Nonnull Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY) {
-
+/*
           String str = L10NHelpers.localize("tile.blocks.fluidconverters.fluidconverter.converter") + ": " + fluidGroup.getGroupName();
           if (str != null) {
               minecraft.fontRendererObj.drawString(str, (94 - minecraft.fontRendererObj.getStringWidth(str)) / 2, -5, 0x808080, false);
           }
-
+*/
          double ratio = Math.round(fluidInput.getValue() / fluidOutput.getValue() * 100.0) / 100.0;
-         str = String.format("x%s",ratio);
+         String str = String.format("x%s",ratio);
           if (str != null) {
               minecraft.fontRendererObj.drawString(str, (94 - minecraft.fontRendererObj.getStringWidth(str)) / 2, 10, 0x808080, false);
           }
@@ -99,6 +104,9 @@ public class FluidConverterRecipeJEI extends BlankRecipeWrapper {
 
     @Override
     public void getIngredients(IIngredients ingredients) {
+      if (fluidConverterStack != null) {
+    //      ingredients.setInput(ItemStack.class, fluidConverterStack);
+      }     
       if (fluidInput != null) {
         ingredients.setInput(FluidStack.class, inputStack);
       }

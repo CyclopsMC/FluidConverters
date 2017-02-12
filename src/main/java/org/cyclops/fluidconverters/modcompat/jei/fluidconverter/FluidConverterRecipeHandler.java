@@ -3,44 +3,39 @@ package org.cyclops.fluidconverters.modcompat.jei.fluidconverter;
 import javax.annotation.Nonnull;
 
 import mezz.jei.api.recipe.IRecipeHandler;
-import mezz.jei.api.recipe.IRecipeWrapper;
 
 /**
  * Handler for the Fluid Converter recipes.
  * @author runesmacher
  */
-public class FluidConverterRecipeHandler<T extends IRecipeWrapper> implements IRecipeHandler<T> {
-
-    private final @Nonnull Class<T> clazz;
-    private final @Nonnull String uid;
-
-    public FluidConverterRecipeHandler(@Nonnull Class<T> clazz, @Nonnull String uid) {
-      this.clazz = clazz;
+public class FluidConverterRecipeHandler implements IRecipeHandler<FluidConverterRecipeJEI> {
+    private String uid;
+    public FluidConverterRecipeHandler(@Nonnull String uid) {
       this.uid = uid;
     }
 
     @Override
-    public @Nonnull Class<T> getRecipeClass() {
-      return clazz;
+    public Class<FluidConverterRecipeJEI> getRecipeClass() {
+      return FluidConverterRecipeJEI.class;
     }
 
     @Override
-    public @Nonnull String getRecipeCategoryUid() {
+    public String getRecipeCategoryUid() {
       return uid;
     }
 
     @Override
-    public @Nonnull IRecipeWrapper getRecipeWrapper(@Nonnull T recipe) {
+    public FluidConverterRecipeJEI getRecipeWrapper(FluidConverterRecipeJEI recipe) {
       return recipe;
     }
 
     @Override
-    public boolean isRecipeValid(@Nonnull T recipe) {
+    public boolean isRecipeValid(FluidConverterRecipeJEI recipe) {
       return true;
     }
 
     @Override
-    public @Nonnull String getRecipeCategoryUid(@Nonnull T recipe) {
+    public String getRecipeCategoryUid(FluidConverterRecipeJEI recipe) {
       return uid;
     }
 }
