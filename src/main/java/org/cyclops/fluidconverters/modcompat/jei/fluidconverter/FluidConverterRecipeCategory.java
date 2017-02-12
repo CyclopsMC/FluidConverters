@@ -15,7 +15,6 @@ import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IDrawableAnimated;
 import mezz.jei.api.gui.IDrawableStatic;
 import mezz.jei.api.gui.IGuiFluidStackGroup;
-import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.BlankRecipeCategory;
@@ -32,9 +31,6 @@ public class FluidConverterRecipeCategory extends BlankRecipeCategory<FluidConve
     private String category;
     private static final int FLUIDINPUT_SLOT = 0;
     private static final int FLUIDOUTPUT_SLOT = 1;
-    private static final int Converter_SLOT = 2;
-
-    // ------------ Category
 
     @Nonnull
     private final IDrawable background;
@@ -52,7 +48,6 @@ public class FluidConverterRecipeCategory extends BlankRecipeCategory<FluidConve
         this.fluidGroup = fluidgroup;
         category = Reference.MOD_ID + ":" + this.fluidGroup.getGroupId();
                 
-        registry.addRecipeHandlers(new FluidConverterRecipeHandler(category));
         registry.addRecipeCategoryCraftingItem(BlockFluidConverter.createItemStack(fluidgroup), category);
     }
 
@@ -64,7 +59,7 @@ public class FluidConverterRecipeCategory extends BlankRecipeCategory<FluidConve
 
     @Override
     public @Nonnull String getTitle() {
-      return BlockFluidConverter.getInstance().getLocalizedName() + " : "+ fluidGroup.getGroupName();
+      return BlockFluidConverter.getInstance().getLocalizedName() + ": "+ fluidGroup.getGroupName();
     }
 
     @Override
@@ -77,17 +72,10 @@ public class FluidConverterRecipeCategory extends BlankRecipeCategory<FluidConve
       arrow.draw(minecraft, 35, 20);
     }
 
-    @SuppressWarnings("null")
     @Override
     public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull FluidConverterRecipeJEI recipeWrapper, @Nonnull IIngredients ingredients) {
       IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
-      IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
-      /*
-      itemStacks.init(Converter_SLOT, true, 30, 18);
-      if(recipeWrapper.inputStack != null) {
-          itemStacks.set(Converter_SLOT, recipeWrapper.fluidConverterStack);
-      }
-      */
+
       fluidStacks.init(FLUIDINPUT_SLOT, false, 12, 8, 16, 40, 1000, false, null);
       if(recipeWrapper.inputStack != null) {
           fluidStacks.set(FLUIDINPUT_SLOT, recipeWrapper.inputStack);

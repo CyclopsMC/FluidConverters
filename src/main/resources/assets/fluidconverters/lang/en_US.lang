@@ -8,6 +8,7 @@ tile.blocks.fluidconverters.fluidconverter.converter=Converter
 
 # JEI Text
 jeigui.fluidconverters.loss=Loss
+jeigui.fluidconverters.rate=Conversion Rate
 
 # Configuration
 config.fluidconverters=%s configuration

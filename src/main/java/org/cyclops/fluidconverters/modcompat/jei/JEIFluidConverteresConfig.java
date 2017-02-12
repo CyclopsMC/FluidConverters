@@ -41,31 +41,9 @@ public class JEIFluidConverteresConfig extends BlankModPlugin implements IModPlu
     
     public void register(IModRegistry registry, IGuiHelper guiHelper) {
         long start = System.nanoTime();
-        
-        /*
 
-     List<FluidConverterRecipeJEI> result = new ArrayList<FluidConverterRecipeJEI>();
-
-     Iterator<FluidGroup> it = FluidGroupRegistry.iterator();
-      while (it.hasNext()) {
-          FluidGroup group = it.next();
-          registry.addRecipeCategoryCraftingItem(BlockFluidConverter.createItemStack(group), CATEGORY);
-
-          List<FluidElement> fluidElementList = group.getFluidElements();
-          for (FluidElement inputFluid : fluidElementList) {
-              for (FluidElement outputFluid : fluidElementList) {
-                  if(inputFluid != outputFluid){
-                      result.add(new FluidConverterRecipeJEI(inputFluid, outputFluid, group));
-                  }
-              }
-          }
-      }
-*/
-//         registry.addRecipeCategoryCraftingItem(BlockFluidConverter.createItemStack(null), CATEGORY);
-        
-
+        registry.addRecipeHandlers(new FluidConverterRecipeHandler());
         List<FluidConverterRecipeJEI> result = new ArrayList<FluidConverterRecipeJEI>();
-        
         
         Iterator<FluidGroup> it = FluidGroupRegistry.iterator();
         while (it.hasNext()) {
@@ -81,10 +59,9 @@ public class JEIFluidConverteresConfig extends BlankModPlugin implements IModPlu
                 }
             }
         }
-
-
+        registry.addRecipes(result);
+        
       long end = System.nanoTime();
-      registry.addRecipes(result);
 
       System.out.println(String.format("FluidConverterRecipeCategory: Added %d flluid converter recipes to JEI in %.3f seconds.", result.size(),
           (end - start) / 1000000000d));

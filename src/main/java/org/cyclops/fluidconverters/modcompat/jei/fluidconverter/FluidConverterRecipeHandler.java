@@ -1,7 +1,6 @@
 package org.cyclops.fluidconverters.modcompat.jei.fluidconverter;
 
-import javax.annotation.Nonnull;
-
+import org.cyclops.fluidconverters.Reference;
 import mezz.jei.api.recipe.IRecipeHandler;
 
 /**
@@ -9,11 +8,6 @@ import mezz.jei.api.recipe.IRecipeHandler;
  * @author runesmacher
  */
 public class FluidConverterRecipeHandler implements IRecipeHandler<FluidConverterRecipeJEI> {
-    private String uid;
-    public FluidConverterRecipeHandler(@Nonnull String uid) {
-      this.uid = uid;
-    }
-
     @Override
     public Class<FluidConverterRecipeJEI> getRecipeClass() {
       return FluidConverterRecipeJEI.class;
@@ -21,7 +15,12 @@ public class FluidConverterRecipeHandler implements IRecipeHandler<FluidConverte
 
     @Override
     public String getRecipeCategoryUid() {
-      return uid;
+        return Reference.MOD_ID + ":" + "null";
+    }
+
+    @Override
+    public String getRecipeCategoryUid(FluidConverterRecipeJEI recipe) {
+      return Reference.MOD_ID + ":" + recipe.getFluidGroup().getGroupId();
     }
 
     @Override
@@ -31,11 +30,6 @@ public class FluidConverterRecipeHandler implements IRecipeHandler<FluidConverte
 
     @Override
     public boolean isRecipeValid(FluidConverterRecipeJEI recipe) {
-      return true;
-    }
-
-    @Override
-    public String getRecipeCategoryUid(FluidConverterRecipeJEI recipe) {
-      return uid;
+      return recipe.getFluidGroup() != null;
     }
 }
