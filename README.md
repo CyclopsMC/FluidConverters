@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/CyclopsMC/FluidConverters.svg?branch=master-1.10)](https://travis-ci.org/CyclopsMC/FluidConverters)
 [![Download](https://api.bintray.com/packages/cyclopsmc/dev/FluidConverters/images/download.svg) ](https://bintray.com/cyclopsmc/dev/FluidConverters/_latestVersion)
-[![CurseForge](http://cf.way2muchnoise.eu/full_223737_downloads.svg)](http://minecraft.curseforge.com/projects/223737)
+[![CurseForge](http://cf.way2muchnoise.eu/full_223737_downloads.svg)](https://minecraft.curseforge.com/projects/fluidconverters)
 
 A mod for converting fluids.
 
