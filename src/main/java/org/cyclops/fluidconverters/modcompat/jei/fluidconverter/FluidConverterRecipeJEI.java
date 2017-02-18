@@ -42,11 +42,11 @@ public class FluidConverterRecipeJEI extends BlankRecipeWrapper {
         this.fluidGroup = fluidGroup;
 
         int inputAmount = 1000;
-        int outputAmount = MathHelper.floor_float(
+        int outputAmount = MathHelper.floor(
                 fluidOutput.denormalize((1 - fluidGroup.getLossRatio()) * fluidInput.normalize(inputAmount)));
 
         if (outputAmount > 1000) {
-            inputAmount = MathHelper.floor_float(
+            inputAmount = MathHelper.floor(
                     fluidInput.denormalize((1 - fluidGroup.getLossRatio()) * fluidOutput.normalize(inputAmount)));
             outputAmount = 1000;
         }
