@@ -67,7 +67,7 @@ public class FluidConverterRecipeCategory extends BlankRecipeCategory<FluidConve
     }
 
     @Override
-    public void drawAnimations(@Nonnull Minecraft minecraft) {
+    public void drawExtras(@Nonnull Minecraft minecraft) {
         arrow.draw(minecraft, 35, 20);
     }
 
