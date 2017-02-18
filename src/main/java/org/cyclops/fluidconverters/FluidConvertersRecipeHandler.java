@@ -62,9 +62,9 @@ public class FluidConvertersRecipeHandler extends RecipeHandler {
                     // Create a filled container
                     ItemStack container = new ItemStack(Items.BUCKET);
                     IFluidHandler fluidHandler = container.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
-                    int filled = fluidHandler.fill(new FluidStack(el.getFluid(), Fluid.BUCKET_VOLUME), true);
 
-                    if(filled == Fluid.BUCKET_VOLUME) {
+                    if(fluidHandler != null
+                            && fluidHandler.fill(new FluidStack(el.getFluid(), Fluid.BUCKET_VOLUME), true) == Fluid.BUCKET_VOLUME) {
                         // Create the default recipe
                         GameRegistry.addRecipe(new ShapedOreRecipe(result, true,
                                 new Object[]{

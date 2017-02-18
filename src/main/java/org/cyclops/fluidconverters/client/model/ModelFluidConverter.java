@@ -84,7 +84,7 @@ public class ModelFluidConverter extends DynamicItemAndBlockModel {
             // Render the default background
             addColoredBakedQuad(quads, 0, 1, 1, 0, 0, fluidOpen, averageColor, direction);
             // Render the fluid/center icon
-            addBakedQuad(quads, 0.25f, 0.75f, 0.75f, 0.25f, -0.0001f, centerTexture, direction.getOpposite());
+            addBakedQuad(quads, 0.25f, 0.75f, 0.75f, 0.25f, -0.01f, centerTexture, direction.getOpposite());
 
         }
 

@@ -14,11 +14,6 @@ public class FluidConverterRecipeHandler implements IRecipeHandler<FluidConverte
     }
 
     @Override
-    public String getRecipeCategoryUid() {
-        return Reference.MOD_ID + ":" + "null";
-    }
-
-    @Override
     public String getRecipeCategoryUid(FluidConverterRecipeJEI recipe) {
         return Reference.MOD_ID + ":" + recipe.getFluidGroup().getGroupId();
     }

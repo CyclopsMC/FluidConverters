@@ -43,7 +43,7 @@ public class CommandListFluids extends CommandMod {
     }
 
     private void printMessage(ICommandSender sender, String message) {
-        sender.addChatMessage(new TextComponentString(message));
+        sender.sendMessage(new TextComponentString(message));
     }
 
     private String join(Collection collection, String delim) {
@@ -87,6 +87,6 @@ public class CommandListFluids extends CommandMod {
             }
         }
 
-        icommandsender.addChatMessage(new TextComponentString(join(info, ", ")));
+        icommandsender.sendMessage(new TextComponentString(join(info, ", ")));
     }
 }

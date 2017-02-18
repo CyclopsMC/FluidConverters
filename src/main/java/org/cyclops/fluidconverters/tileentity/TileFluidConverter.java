@@ -117,7 +117,7 @@ public class TileFluidConverter extends CyclopsTileEntity implements CyclopsTile
 
         // Calculate the max amount of fluid (in fluid units) that will be passed to the output,
         // keeping loss into account
-        int amountToBeFilled = MathHelper.floor_float(fluidElement.denormalize((1 - lossRatio) * amount));
+        int amountToBeFilled = MathHelper.floor(fluidElement.denormalize((1 - lossRatio) * amount));
         FluidStack fluidStack = new FluidStack(fluidElement.getFluid(), amountToBeFilled);
 
         // Simulate filling the handler
@@ -146,7 +146,7 @@ public class TileFluidConverter extends CyclopsTileEntity implements CyclopsTile
             FluidStack toFill = new FluidStack(fluid, BlockFluidConverterConfig.mBRate);
 
             // Check if there is a fluid handler on this side
-            IFluidHandler handler = TileHelpers.getCapability(worldObj, getPos().offset(facing),
+            IFluidHandler handler = TileHelpers.getCapability(world, getPos().offset(facing),
                     facing.getOpposite(), CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
 
             // Try to fill fluid to this handler and update the buffer
@@ -182,7 +182,7 @@ public class TileFluidConverter extends CyclopsTileEntity implements CyclopsTile
         if (!isValidConverter()) return null;
 
         // Is there actually anything to fill in that direction?
-        IFluidHandler handler = TileHelpers.getCapability(worldObj, getPos().offset(from),
+        IFluidHandler handler = TileHelpers.getCapability(world, getPos().offset(from),
                 from.getOpposite(), CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
         if (handler == null) return null;
 
