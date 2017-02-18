@@ -9,6 +9,10 @@ repositories {
         name "Mobius Repo"
         url "http://mobiusstrip.eu/maven"
     }
+    maven {
+        name 'DVS1 Maven FS'
+        url 'http://dvs1.progwml6.com/files/maven'
+    }
 }
 dependencies {
     // Add something like 'cyclopscore_version_local=0.1.0-DEV' to your gradle.properties if you want to use a custom local CyclopsCore version.
@@ -20,6 +24,11 @@ dependencies {
 
     // Mod compatibility
     compile "mcp.mobius.waila:Waila:${config.waila_version}:dev" // http://mobiusstrip.eu/maven/mcp/mobius/waila/Waila/
+
+    // compile against the JEI API
+    deobfCompile "mezz.jei:jei_${config.minecraft_version}:${config.jei_version}:api"
+    // at runtime, use the full JEI jar
+    runtime "mezz.jei:jei_${config.minecraft_version}:${config.jei_version}"
 
     // Project lombok
     compile "org.projectlombok:lombok:1.14.4"
