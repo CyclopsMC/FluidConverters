@@ -1,0 +1,5 @@
+As always, don't forget to backup your world before updating!
+Requires CyclopsCore version 0.9.3 or higher.
+
+Additions:
+* Add JEI integration
