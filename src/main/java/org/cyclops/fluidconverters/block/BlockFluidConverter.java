@@ -180,7 +180,7 @@ public class BlockFluidConverter extends ConfigurableBlockContainer {
         TileFluidConverter tile = TileHelpers.getSafeTile(world, pos, TileFluidConverter.class);
         if (tile == null) return state;
 
-        FluidGroup fluidGroup = tile.getFluidGroupRef().getFluidGroup();
+        FluidGroup fluidGroup = tile.getFluidGroup();
         Map<EnumFacing, Fluid> fluidOutputs = tile.getFluidOutputs();
 
         if (fluidGroup != null) ret = ret.withProperty(FLUID_GROUP, fluidGroup);
