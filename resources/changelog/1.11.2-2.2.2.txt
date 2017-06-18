@@ -1,0 +1,6 @@
+As always, don't forget to backup your world before updating!
+Requires CyclopsCore version 0.10.6 or higher.
+
+Fixes:
+* Fix configuration of fluids on converter blocks, Closes #35
+* Fix default BM life essence fluid name
