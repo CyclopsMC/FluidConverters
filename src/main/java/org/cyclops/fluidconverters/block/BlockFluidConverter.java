@@ -124,9 +124,9 @@ public class BlockFluidConverter extends ConfigurableBlockContainer {
         TileFluidConverter tile = (TileFluidConverter) world.getTileEntity(pos);
         Fluid fluid = null;
 
-        if (!itemStack.isEmpty() && itemStack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null)) {
+        if (!itemStack.isEmpty() && itemStack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null)) {
             // Player has a container with a valid fluid: set the output of the tile entity
-            FluidStack fluidStack = FluidHelpers.getFluid(itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null));
+            FluidStack fluidStack = FluidHelpers.getFluid(itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null));
             if (fluidStack != null) {
                 fluid = fluidStack.getFluid();
             }
