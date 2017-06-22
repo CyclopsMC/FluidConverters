@@ -1,10 +1,12 @@
 package org.cyclops.fluidconverters.item;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.World;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.item.ItemBlockNBT;
@@ -26,8 +28,8 @@ public class ItemBlockFluidConverter extends ItemBlockNBT {
     }
 
     @Override
-    public void addInformation(ItemStack itemStack, EntityPlayer entityPlayer, List list, boolean par4) {
-        super.addInformation(itemStack, entityPlayer, list, par4);
+    public void addInformation(ItemStack itemStack, World world, List<String> list, ITooltipFlag flag) {
+        super.addInformation(itemStack, world, list, flag);
 
         NBTTagCompound nbt = itemStack.getTagCompound();
         if (nbt == null) return;
@@ -54,7 +56,7 @@ public class ItemBlockFluidConverter extends ItemBlockNBT {
      * @param isShifted When set to false a "shift to get more info" will be shown, otherwise the
      *                  full info is shown
      */
-    public static void addInformation(List info, FluidGroup fluidGroup, float buffer, boolean isShifted) {
+    public static void addInformation(List<String> info, FluidGroup fluidGroup, float buffer, boolean isShifted) {
         if (fluidGroup != null) {
             info.add(TextFormatting.GOLD +
                             L10NHelpers.localize("tile.blocks.fluidconverters.fluidconverter.converter") + ": " +

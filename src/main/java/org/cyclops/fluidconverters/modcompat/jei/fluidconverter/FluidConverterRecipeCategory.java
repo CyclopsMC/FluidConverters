@@ -1,7 +1,12 @@
 package org.cyclops.fluidconverters.modcompat.jei.fluidconverter;
 
-import javax.annotation.Nonnull;
-
+import mezz.jei.api.IGuiHelper;
+import mezz.jei.api.IModRegistry;
+import mezz.jei.api.gui.*;
+import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IRecipeCategory;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.ResourceLocation;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.fluidconverters.FluidConverters;
 import org.cyclops.fluidconverters.Reference;
@@ -9,23 +14,13 @@ import org.cyclops.fluidconverters.block.BlockFluidConverter;
 import org.cyclops.fluidconverters.block.BlockFluidConverterConfig;
 import org.cyclops.fluidconverters.fluidgroup.FluidGroup;
 
-import mezz.jei.api.IGuiHelper;
-import mezz.jei.api.IModRegistry;
-import mezz.jei.api.gui.IDrawable;
-import mezz.jei.api.gui.IDrawableAnimated;
-import mezz.jei.api.gui.IDrawableStatic;
-import mezz.jei.api.gui.IGuiFluidStackGroup;
-import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.BlankRecipeCategory;
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.ResourceLocation;
+import javax.annotation.Nonnull;
 
 /**
  * Category for the Fluid converter recipes.
  * @author runesmacher
  */
-public class FluidConverterRecipeCategory extends BlankRecipeCategory<FluidConverterRecipeJEI> {
+public class FluidConverterRecipeCategory implements IRecipeCategory<FluidConverterRecipeJEI> {
 
     private FluidGroup fluidGroup;
     private String category;
@@ -37,7 +32,7 @@ public class FluidConverterRecipeCategory extends BlankRecipeCategory<FluidConve
     @Nonnull
     protected final IDrawableAnimated arrow;
 
-    public FluidConverterRecipeCategory(IModRegistry registry, IGuiHelper guiHelper, FluidGroup fluidgroup) {
+    public FluidConverterRecipeCategory(IGuiHelper guiHelper, FluidGroup fluidgroup) {
         ResourceLocation resourceLocation = new ResourceLocation(
                 Reference.MOD_ID + ":" + FluidConverters._instance.getReferenceValue(ModBase.REFKEY_TEXTURE_PATH_GUI)
                         + BlockFluidConverterConfig._instance.getNamedId() + "_gui_jei.png");
@@ -46,9 +41,11 @@ public class FluidConverterRecipeCategory extends BlankRecipeCategory<FluidConve
         this.arrow = guiHelper.createAnimatedDrawable(arrowDrawable, 200, IDrawableAnimated.StartDirection.LEFT, false);
 
         this.fluidGroup = fluidgroup;
-        category = Reference.MOD_ID + ":" + this.fluidGroup.getGroupId();
+        category = getCategoryUid(fluidgroup);
+    }
 
-        registry.addRecipeCategoryCraftingItem(BlockFluidConverter.createItemStack(fluidgroup), category);
+    public static String getCategoryUid(FluidGroup fluidGroup) {
+        return Reference.MOD_ID + ":" + fluidGroup.getGroupId();
     }
 
     @Override
@@ -59,6 +56,11 @@ public class FluidConverterRecipeCategory extends BlankRecipeCategory<FluidConve
     @Override
     public @Nonnull String getTitle() {
         return BlockFluidConverter.getInstance().getLocalizedName() + ": " + fluidGroup.getGroupName();
+    }
+
+    @Override
+    public String getModName() {
+        return Reference.MOD_NAME;
     }
 
     @Override

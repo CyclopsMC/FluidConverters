@@ -4,20 +4,18 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import mezz.jei.api.gui.IGuiIngredient;
 import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.BlankRecipeWrapper;
+import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fluids.FluidStack;
-
 import org.cyclops.cyclopscore.helper.L10NHelpers;
 import org.cyclops.fluidconverters.fluidgroup.FluidGroup;
 import org.cyclops.fluidconverters.fluidgroup.FluidGroup.FluidElement;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import java.awt.Rectangle;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +26,7 @@ import java.util.Map;
  */
 @EqualsAndHashCode(callSuper = false)
 @Data
-public class FluidConverterRecipeJEI extends BlankRecipeWrapper {
+public class FluidConverterRecipeJEI implements IRecipeWrapper {
     private final FluidElement fluidInput, fluidOutput;
     public final FluidStack inputStack, outputStack;
 
@@ -60,13 +58,13 @@ public class FluidConverterRecipeJEI extends BlankRecipeWrapper {
         double ratio = Math.round(fluidInput.getValue() / fluidOutput.getValue() * 100.0) / 100.0;
         String str = String.format("x%s", ratio);
         if (str != null) {
-            int stringWidth = minecraft.fontRendererObj.getStringWidth(str);
+            int stringWidth = minecraft.fontRenderer.getStringWidth(str);
             int x = (94 - stringWidth) / 2;
             int y = 10;
-            minecraft.fontRendererObj.drawString(str, x, y, 0x808080, false);
+            minecraft.fontRenderer.drawString(str, x, y, 0x808080, false);
 
-            conversionRateTooltipArea = new Rectangle(x, y, minecraft.fontRendererObj.getStringWidth(str),
-                    minecraft.fontRendererObj.FONT_HEIGHT);
+            conversionRateTooltipArea = new Rectangle(x, y, minecraft.fontRenderer.getStringWidth(str),
+                    minecraft.fontRenderer.FONT_HEIGHT);
         }
 
         if (fluidGroup.getLossRatio() > 0)
@@ -75,13 +73,13 @@ public class FluidConverterRecipeJEI extends BlankRecipeWrapper {
             str = "";
 
         if (str != null) {
-            int stringWidth = minecraft.fontRendererObj.getStringWidth(str);
+            int stringWidth = minecraft.fontRenderer.getStringWidth(str);
             int x = (94 - stringWidth) / 2;
             int y = 40;
-            minecraft.fontRendererObj.drawString(str, x, y, 0x808080, false);
+            minecraft.fontRenderer.drawString(str, x, y, 0x808080, false);
 
-            lossTooltipArea = new Rectangle(x, y, minecraft.fontRendererObj.getStringWidth(str),
-                    minecraft.fontRendererObj.FONT_HEIGHT);
+            lossTooltipArea = new Rectangle(x, y, minecraft.fontRenderer.getStringWidth(str),
+                    minecraft.fontRenderer.FONT_HEIGHT);
         }
     }
 
@@ -98,9 +96,6 @@ public class FluidConverterRecipeJEI extends BlankRecipeWrapper {
             return ret;
         }
         return null;
-    }
-
-    public void setInfoData(Map<Integer, ? extends IGuiIngredient<ItemStack>> ings) {
     }
 
     @Override

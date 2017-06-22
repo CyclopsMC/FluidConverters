@@ -1,26 +1,25 @@
 package org.cyclops.fluidconverters.modcompat.jei;
 
+import com.google.common.collect.Lists;
 import mezz.jei.api.*;
+import mezz.jei.api.recipe.IRecipeCategoryRegistration;
 import org.cyclops.fluidconverters.block.BlockFluidConverter;
 import org.cyclops.fluidconverters.fluidgroup.FluidGroup;
-import org.cyclops.fluidconverters.fluidgroup.FluidGroupRegistry;
 import org.cyclops.fluidconverters.fluidgroup.FluidGroup.FluidElement;
+import org.cyclops.fluidconverters.fluidgroup.FluidGroupRegistry;
 import org.cyclops.fluidconverters.modcompat.jei.fluidconverter.FluidConverterRecipeCategory;
-import org.cyclops.fluidconverters.modcompat.jei.fluidconverter.FluidConverterRecipeHandler;
 import org.cyclops.fluidconverters.modcompat.jei.fluidconverter.FluidConverterRecipeJEI;
 
-import java.util.ArrayList;
+import javax.annotation.Nonnull;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.annotation.Nonnull;
 
 /**
  * Helper for registering JEI manager.
  * @author runesmacher
  */
 @JEIPlugin
-public class JEIFluidConverteresConfig extends BlankModPlugin implements IModPlugin {
+public class JEIFluidConvertersConfig implements IModPlugin {
 
     public static IJeiHelpers JEI_HELPER;
 
@@ -30,22 +29,29 @@ public class JEIFluidConverteresConfig extends BlankModPlugin implements IModPlu
     }
 
     @Override
-    public void register(@Nonnull IModRegistry registry) {
-        if (JEIModCompat.canBeUsed) {
-            JEI_HELPER = registry.getJeiHelpers();
-            // Fluid converter
-            this.register(registry, JEI_HELPER.getGuiHelper());
-        }
-    }
-
-    public void register(IModRegistry registry, IGuiHelper guiHelper) {
-        registry.addRecipeHandlers(new FluidConverterRecipeHandler());
-        List<FluidConverterRecipeJEI> result = new ArrayList<FluidConverterRecipeJEI>();
-
+    public void registerCategories(IRecipeCategoryRegistration registry) {
         Iterator<FluidGroup> it = FluidGroupRegistry.iterator();
         while (it.hasNext()) {
             FluidGroup group = it.next();
-            registry.addRecipeCategories(new FluidConverterRecipeCategory(registry, guiHelper, group));
+            registry.addRecipeCategories(new FluidConverterRecipeCategory(registry.getJeiHelpers().getGuiHelper(), group));
+        }
+    }
+
+    @Override
+    public void register(@Nonnull IModRegistry registry) {
+        if (JEIModCompat.canBeUsed) {
+            JEI_HELPER = registry.getJeiHelpers();
+            this.registerFluidConverters(registry);
+        }
+    }
+
+    public void registerFluidConverters(IModRegistry registry) {
+        Iterator<FluidGroup> it = FluidGroupRegistry.iterator();
+        while (it.hasNext()) {
+            List<FluidConverterRecipeJEI> result = Lists.newArrayList();
+            FluidGroup group = it.next();
+            String category = FluidConverterRecipeCategory.getCategoryUid(group);
+            registry.addRecipeCatalyst(BlockFluidConverter.createItemStack(group), category);
 
             List<FluidElement> fluidElementList = group.getFluidElements();
             for (FluidElement inputFluid : fluidElementList) {
@@ -55,7 +61,7 @@ public class JEIFluidConverteresConfig extends BlankModPlugin implements IModPlu
                     }
                 }
             }
+            registry.addRecipes(result, category);
         }
-        registry.addRecipes(result);
     }
 }

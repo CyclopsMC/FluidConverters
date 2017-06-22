@@ -2,12 +2,15 @@ package org.cyclops.fluidconverters;
 
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.*;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import org.apache.logging.log4j.Level;
+import org.cyclops.cyclopscore.helper.CraftingHelpers;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.init.RecipeHandler;
 import org.cyclops.fluidconverters.block.BlockFluidConverter;
@@ -61,17 +64,18 @@ public class FluidConvertersRecipeHandler extends RecipeHandler {
 
                     // Create a filled container
                     ItemStack container = new ItemStack(Items.BUCKET);
-                    IFluidHandler fluidHandler = container.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+                    IFluidHandlerItem fluidHandler = container.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
 
                     if(fluidHandler != null
                             && fluidHandler.fill(new FluidStack(el.getFluid(), Fluid.BUCKET_VOLUME), true) == Fluid.BUCKET_VOLUME) {
                         // Create the default recipe
-                        GameRegistry.addRecipe(new ShapedOreRecipe(result, true,
+                        ResourceLocation id = CraftingHelpers.newRecipeIdentifier(result);
+                        CraftingHelpers.registerRecipe(id, new ShapedOreRecipe(id, result, true,
                                 new Object[]{
                                         "I I",
                                         "GBG",
                                         "I I",
-                                        'B', container,
+                                        'B', fluidHandler.getContainer(),
                                         'G', new ItemStack(Items.GOLD_NUGGET),
                                         'I', new ItemStack(Items.IRON_INGOT)
                                 }
