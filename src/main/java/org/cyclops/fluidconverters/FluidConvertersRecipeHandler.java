@@ -5,6 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.*;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import org.apache.logging.log4j.Level;
@@ -61,7 +62,7 @@ public class FluidConvertersRecipeHandler extends RecipeHandler {
 
                     // Create a filled container
                     ItemStack container = new ItemStack(Items.BUCKET);
-                    IFluidHandler fluidHandler = container.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+                    IFluidHandlerItem fluidHandler = container.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
 
                     if(fluidHandler != null
                             && fluidHandler.fill(new FluidStack(el.getFluid(), Fluid.BUCKET_VOLUME), true) == Fluid.BUCKET_VOLUME) {
@@ -71,7 +72,7 @@ public class FluidConvertersRecipeHandler extends RecipeHandler {
                                         "I I",
                                         "GBG",
                                         "I I",
-                                        'B', container,
+                                        'B', fluidHandler.getContainer(),
                                         'G', new ItemStack(Items.GOLD_NUGGET),
                                         'I', new ItemStack(Items.IRON_INGOT)
                                 }
