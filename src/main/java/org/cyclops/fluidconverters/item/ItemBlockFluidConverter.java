@@ -64,7 +64,7 @@ public class ItemBlockFluidConverter extends ItemBlockNBT {
             if (isShifted) {
                 // Buffer info
                 info.add("" + TextFormatting.DARK_GRAY +
-                        "Buffer: " + buffer + " / " + TileFluidConverter.MAX_BUFFER_SIZE);
+                        "Buffer: " + buffer + " / " + TileFluidConverter.getMaxBufferSize());
 
                 // Fluid elements
                 List<FluidGroup.FluidElement> fluidElements = fluidGroup.getFluidElements();
