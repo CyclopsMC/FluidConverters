@@ -162,11 +162,15 @@ public class TileFluidConverter extends CyclopsTileEntity implements CyclopsTile
         fillSides(false);
     }
 
+    public static int getMaxBufferSize() {
+        return BlockFluidConverterConfig.mBRate * 10;
+    }
+
     private boolean addToBuffer(FluidGroup.FluidElement sourceFluidElement, int amount, boolean doFill) {
         // Save the liquid amount in the internal buffer only if we can fit all the fluid in the buffer
         float normalizedAmount = sourceFluidElement.normalize(amount);
         float newBufferSize = buffer + normalizedAmount;
-        boolean canFill = newBufferSize <= BlockFluidConverterConfig.mBRate * 10;
+        boolean canFill = newBufferSize <= getMaxBufferSize();
 
         if (doFill && canFill) {
             setBuffer(newBufferSize);
