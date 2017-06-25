@@ -26,9 +26,6 @@ import java.util.TreeMap;
  */
 public class TileFluidConverter extends CyclopsTileEntity implements CyclopsTileEntity.ITickingTile {
 
-    // Maximum size of the internal buffer
-    public static final int MAX_BUFFER_SIZE = 1000;
-
     @NBTPersist
     @Getter
     private FluidGroupReference fluidGroupRef;
@@ -169,7 +166,7 @@ public class TileFluidConverter extends CyclopsTileEntity implements CyclopsTile
         // Save the liquid amount in the internal buffer only if we can fit all the fluid in the buffer
         float normalizedAmount = sourceFluidElement.normalize(amount);
         float newBufferSize = buffer + normalizedAmount;
-        boolean canFill = newBufferSize <= MAX_BUFFER_SIZE;
+        boolean canFill = newBufferSize <= BlockFluidConverterConfig.mBRate * 10;
 
         if (doFill && canFill) {
             setBuffer(newBufferSize);
