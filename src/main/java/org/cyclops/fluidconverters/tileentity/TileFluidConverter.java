@@ -163,20 +163,23 @@ public class TileFluidConverter extends CyclopsTileEntity implements CyclopsTile
     }
 
     public static int getMaxBufferSize() {
-        return BlockFluidConverterConfig.mBRate * 10;
+        return BlockFluidConverterConfig.mBRate;
     }
 
-    private boolean addToBuffer(FluidGroup.FluidElement sourceFluidElement, int amount, boolean doFill) {
+    private int addToBuffer(FluidGroup.FluidElement sourceFluidElement, int amount, boolean doFill) {
+        if (buffer >= getMaxBufferSize()) {
+            return 0;
+        }
         // Save the liquid amount in the internal buffer only if we can fit all the fluid in the buffer
         float normalizedAmount = sourceFluidElement.normalize(amount);
-        float newBufferSize = buffer + normalizedAmount;
-        boolean canFill = newBufferSize <= getMaxBufferSize();
+        float newBufferSize = Math.min(buffer + normalizedAmount, getMaxBufferSize());
+        float filled = newBufferSize - buffer;
 
-        if (doFill && canFill) {
+        if (doFill) {
             setBuffer(newBufferSize);
         }
 
-        return canFill;
+        return (int) filled;
     }
 
     private FluidStack doDrain(EnumFacing from, Fluid fluid, int amount, boolean doDrain) {
@@ -222,9 +225,7 @@ public class TileFluidConverter extends CyclopsTileEntity implements CyclopsTile
             if (sourceFluidElement == null) return 0;
 
             // Save all liquid in the buffer
-            boolean addedToBuffer = fluidConverter.addToBuffer(sourceFluidElement, resource.amount, doFill);
-
-            return addedToBuffer ? resource.amount : 0;
+            return fluidConverter.addToBuffer(sourceFluidElement, resource.amount, doFill);
         }
 
         @Nullable
