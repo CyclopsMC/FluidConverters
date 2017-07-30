@@ -26,7 +26,7 @@ dependencies {
     compile "mcp.mobius.waila:Waila:${config.waila_version}:dev" // http://mobiusstrip.eu/maven/mcp/mobius/waila/Waila/
 
     // compile against the JEI API
-    deobfCompile "mezz.jei:jei_${config.minecraft_version}:${config.jei_version}:api"
+    deobfCompile "mezz.jei:jei_${config.jei_version}:api"
     // at runtime, use the full JEI jar
     runtime "mezz.jei:jei_${config.minecraft_version}:${config.jei_version}"
 

@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.command.CommandMod;
 import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.config.extendedconfig.BlockItemConfigReference;
+import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.init.ItemCreativeTab;
 import org.cyclops.cyclopscore.init.ModBaseVersionable;
 import org.cyclops.cyclopscore.init.RecipeHandler;
@@ -125,6 +126,10 @@ public class FluidConverters extends ModBaseVersionable {
         while (it.hasNext()) {
             FluidGroup group = it.next();
             clog("Registered fluid group '" + group.getGroupName() + "' (" + group.getGroupId() + ")");
+        }
+
+        if (MinecraftHelpers.isClientSide()) {
+            FluidColorAnalyzer.calculateAverageColors();
         }
 
         // Call super method

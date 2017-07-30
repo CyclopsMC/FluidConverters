@@ -60,7 +60,7 @@ public class ModelFluidConverter extends DynamicItemAndBlockModel {
         super(false, item);
         this.baseModel = baseModel;
         this.fluidOutputs = fluidOutputs;
-        this.averageColor = fluidGroup == null ? DEFAULT_COLOR : fluidGroup.getAverageColor();
+        this.averageColor = fluidGroup == null || fluidGroup.getAverageColor() == null ? DEFAULT_COLOR : fluidGroup.getAverageColor();
     }
 
     @Override
