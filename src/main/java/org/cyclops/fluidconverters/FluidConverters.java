@@ -3,11 +3,16 @@ package org.cyclops.fluidconverters;
 import com.google.common.collect.Maps;
 import net.minecraft.command.ICommand;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.command.CommandMod;
 import org.cyclops.cyclopscore.config.ConfigHandler;
@@ -66,6 +71,7 @@ public class FluidConverters extends ModBaseVersionable {
 
     public FluidConverters() {
         super(Reference.MOD_ID, Reference.MOD_NAME, Reference.MOD_VERSION);
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @Override
@@ -108,14 +114,10 @@ public class FluidConverters extends ModBaseVersionable {
             e.printStackTrace();
         }
     }
-    
-    /**
-     * Register the config dependent things like world generation and proxy handlers.
-     * @param event The Forge event required for this.
-     */
-    @EventHandler
-    @Override
-    public void init(FMLInitializationEvent event) {
+
+    // Call this right before recipes are registered, at which point all fluids _should_ be registered.
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void beforeRecipesRegistration(RegistryEvent<IRecipe> event) {
         // Load all fluid groups
         List<FluidGroup> fluidGroups = fluidGroupsLoader.load();
         // Add them to the registry
@@ -127,7 +129,15 @@ public class FluidConverters extends ModBaseVersionable {
             FluidGroup group = it.next();
             clog("Registered fluid group '" + group.getGroupName() + "' (" + group.getGroupId() + ")");
         }
-
+    }
+    
+    /**
+     * Register the config dependent things like world generation and proxy handlers.
+     * @param event The Forge event required for this.
+     */
+    @EventHandler
+    @Override
+    public void init(FMLInitializationEvent event) {
         if (MinecraftHelpers.isClientSide()) {
             FluidColorAnalyzer.calculateAverageColors();
         }
