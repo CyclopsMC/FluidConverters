@@ -12,6 +12,7 @@
   "credits": "immortaleeb",
   "parent": "",
   "screenshots": [],
-  "dependencies": []
+  "dependencies": [],
+  "requiredMods": [ "forge", "cyclopscore" ]
 }
 ]
