@@ -50,7 +50,8 @@ import java.util.List;
         useMetadata = true,
         version = Reference.MOD_VERSION,
         dependencies = Reference.MOD_DEPENDENCIES,
-        guiFactory = "org.cyclops.fluidconverters.GuiConfigOverview$ExtendedConfigGuiFactory"
+        guiFactory = "org.cyclops.fluidconverters.GuiConfigOverview$ExtendedConfigGuiFactory",
+        certificateFingerprint = Reference.MOD_FINGERPRINT
 )
 public class FluidConverters extends ModBaseVersionable {
 
