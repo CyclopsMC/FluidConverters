@@ -1,12 +1,14 @@
 ## FluidConverters
 
 [![Build Status](https://travis-ci.org/CyclopsMC/FluidConverters.svg?branch=master-1.11)](https://travis-ci.org/CyclopsMC/FluidConverters)
-[![Download](https://api.bintray.com/packages/cyclopsmc/dev/FluidConverters/images/download.svg) ](https://bintray.com/cyclopsmc/dev/FluidConverters/_latestVersion)
+[![Download](https://img.shields.io/maven-metadata/v/http/cyclopsmc.jfrog.io/cyclopsmc/libs-release/org/cyclops/fluidconverters/FluidConverters/maven-metadata.xml.svg) ](https://cyclopsmc.jfrog.io/cyclopsmc/libs-release/org/cyclops/fluidconverters/FluidConverters/)
 [![CurseForge](http://cf.way2muchnoise.eu/full_223737_downloads.svg)](https://minecraft.curseforge.com/projects/fluidconverters)
 
 A mod for converting fluids.
 
 All stable releases (including deobfuscated builds) can be found on [CurseForge](http://minecraft.curseforge.com/mc-mods/fluidconverters/files).
+
+[Development builds](https://cyclopsmc.jfrog.io/cyclopsmc/libs-release/org/cyclops/fluidconverters/FluidConverters/) are hosted by [JFrog Artifactory](https://www.jfrog.com/artifactory/).
 
 ### Contributing
 * Before submitting a pull request containing a new feature, please discuss this first with one of the lead developers.
