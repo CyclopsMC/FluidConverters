@@ -110,7 +110,10 @@ public class TileFluidConverter extends CyclopsTileEntity implements CyclopsTile
     private int tryToFillFluid(IFluidHandler handler, FluidGroup.FluidElement fluidElement,
                                int amount, float lossRatio, boolean doFill) {
         // We can only drain from here if we have at least that amount in the buffer
-        if (buffer < amount) return 0;
+        if (buffer <= 0) {
+            return 0;
+        }
+        amount = Math.min(amount, (int) Math.floor(buffer));
 
         // Calculate the max amount of fluid (in fluid units) that will be passed to the output,
         // keeping loss into account
@@ -133,14 +136,14 @@ public class TileFluidConverter extends CyclopsTileEntity implements CyclopsTile
     }
 
     public boolean fillSides(boolean simulate) {
-        if (buffer < BlockFluidConverterConfig.mBRate) return false;
+        if (buffer <= 0) return false;
 
         // Loop over all possible output directions
         int filled = 0;
         for (Map.Entry<EnumFacing, Fluid> entry : fluidOutputs.entrySet()) {
             EnumFacing facing = entry.getKey();
             Fluid fluid = entry.getValue();
-            FluidStack toFill = new FluidStack(fluid, BlockFluidConverterConfig.mBRate);
+            FluidStack toFill = new FluidStack(fluid, Math.min(BlockFluidConverterConfig.mBRate, (int) Math.floor(buffer)));
 
             // Check if there is a fluid handler on this side
             IFluidHandler handler = TileHelpers.getCapability(world, getPos().offset(facing),
@@ -150,7 +153,9 @@ public class TileFluidConverter extends CyclopsTileEntity implements CyclopsTile
             if (handler != null && handler.fill(toFill, false) > 0) {
                 FluidGroup fluidGroup = getFluidGroup();
                 filled += tryToFillFluid(handler, fluidGroup.getFluidElementByFluid(fluid), BlockFluidConverterConfig.mBRate, fluidGroup.getLossRatio(), !simulate);
-                if (buffer < BlockFluidConverterConfig.mBRate) return filled > 0;    // quit if there is nothing left to drain here
+                if (buffer <= 0) {
+                    return filled > 0; // quit if there is nothing left to drain here
+                }
             }
         }
         return filled > 0;
@@ -163,7 +168,7 @@ public class TileFluidConverter extends CyclopsTileEntity implements CyclopsTile
     }
 
     public static int getMaxBufferSize() {
-        return BlockFluidConverterConfig.mBRate;
+        return BlockFluidConverterConfig.mBRate * 10;
     }
 
     private int addToBuffer(FluidGroup.FluidElement sourceFluidElement, int amount, boolean doFill) {
