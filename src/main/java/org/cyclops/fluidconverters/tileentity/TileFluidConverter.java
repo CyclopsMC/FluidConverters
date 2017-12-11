@@ -223,7 +223,7 @@ public class TileFluidConverter extends CyclopsTileEntity implements CyclopsTile
             if (!fluidConverter.isValidConverter()
                     || resource == null
                     || fluidConverter.getFluidGroup().getFluidElementByFluid(resource.getFluid()) == null
-                    || fluidConverter.fluidOutputs.get(side) != null) return 0;
+                    || fluidConverter.fluidOutputs.get(side) == null) return 0;
 
             // Fetch the fluid element from the source
             FluidGroup.FluidElement sourceFluidElement = fluidConverter.getFluidGroup().getFluidElementByFluid(resource.getFluid());
