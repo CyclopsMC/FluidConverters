@@ -67,7 +67,7 @@ public class TileFluidConverter extends CyclopsTileEntity implements CyclopsTile
             this.buffer = newBuffer;
 
             // Force an explicit update when setting the buffer
-            this.sendUpdate();
+            this.markDirty();
         }
     }
 
