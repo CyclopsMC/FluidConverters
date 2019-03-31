@@ -203,6 +203,11 @@ public class TileFluidConverter extends CyclopsTileEntity implements CyclopsTile
         return new FluidStack(fluid, liquidDrained);
     }
 
+    @Override
+    protected EnumFacing transformFacingForRotation(EnumFacing facing) {
+        return facing;
+    }
+
     public static class FluidConverterCapability implements IFluidHandler {
 
         private final TileFluidConverter fluidConverter;
@@ -223,7 +228,7 @@ public class TileFluidConverter extends CyclopsTileEntity implements CyclopsTile
             if (!fluidConverter.isValidConverter()
                     || resource == null
                     || fluidConverter.getFluidGroup().getFluidElementByFluid(resource.getFluid()) == null
-                    || fluidConverter.fluidOutputs.get(side) == null) return 0;
+                    || fluidConverter.fluidOutputs.get(side) != null) return 0;
 
             // Fetch the fluid element from the source
             FluidGroup.FluidElement sourceFluidElement = fluidConverter.getFluidGroup().getFluidElementByFluid(resource.getFluid());
